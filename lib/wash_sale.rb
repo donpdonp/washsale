@@ -26,7 +26,7 @@ class WashSale
 
   def inventory_display
     words = @inventory.map do |b|
-      "#{b.time.strftime("%b-%d")} #{b.amount}@#{b.price} $#{"%0.2f"%b.value.to_f}"
+      "#{b.time.strftime("%b-%d")} #{"%0.2f"%b.amount.to_f}@#{"%0.2f"%b.price.to_f} $#{"%0.2f"%b.value.to_f}"
     end
     puts "Inventory:"
     words.each {|line| puts line}
@@ -37,7 +37,7 @@ class WashSale
     @records.each do |record|
       case record.action
       when "spent"
-        puts " buy #{record.amount} @ #{record.price}"
+        puts " buy #{"%0.2f"%record.amount} @ #{record.price}"
         buy(record)
       when "earned"
         puts "sell #{record.value_display}"
