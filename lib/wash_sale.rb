@@ -22,7 +22,9 @@ class WashSale
   end
 
   def sell(record)
-    @inventory.each {}
+    if record.value > inventory.total
+      raise "Error, insufficient inventory for #{record}"
+    end
   end
 
   def inventory_display
@@ -36,6 +38,7 @@ class WashSale
     end
     puts "Inventory:"
     words.each {|line| puts line}
+    puts "Total coins: #{"%0.2f" % @inventory.total_coins.to_f}"
   end
 
   def wash_sales
@@ -43,7 +46,7 @@ class WashSale
     @records.each do |record|
       case record.action
       when "spent"
-        puts " buy #{"%0.2f"%record.amount} @ #{record.price}"
+        puts " buy #{"%0.2f"%record.amount} @ #{"%0.2f"%record.price}"
         buy(record)
       when "earned"
         puts "sell #{record.value_display}"

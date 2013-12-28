@@ -15,6 +15,7 @@ class Inventory
     @balances.map{|b| yield b}
   end
 
-  def total
+  def total_coins
+    @balances.reduce(0){|memo, record| memo + record.amount}
   end
 end

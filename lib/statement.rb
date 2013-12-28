@@ -39,7 +39,7 @@ class Statement
     info_match = /(\w+) (bought|sold): \[tid:(\d+)\] (\d+\.\d+).(\w+) at \$((\d+,)?\d+\.\d+)/
     matches = info_match.match(info)
     {currency: matches[1], buysell: matches[2], tid: matches[3],
-     amount: matches[4], price: matches[6]}
+     amount: BigDecimal.new(matches[4]), price: BigDecimal.new(matches[6])}
   end
 
   def amount
