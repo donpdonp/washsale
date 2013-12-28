@@ -17,11 +17,11 @@ class WashSale
   end
 
   def buy(record)
-    @balances << record
+    @inventory << record
   end
 
   def sell(record)
-    @balances.each {}
+    @inventory.each {}
   end
 
   def inventory_display
