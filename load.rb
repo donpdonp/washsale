@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'bundler/setup'
 require 'json'
-require_relative 'wash_sale.rb'
+require 'wash_sale.rb'
 
 puts "Loading #{ARGV}"
 inventory = JSON.load(File.open("inventory.json"))
