@@ -1,5 +1,6 @@
 require 'time'
 require 'bigdecimal'
+require 'csv'
 
 class Statement
   attr_reader :time, :action, :value, :balance, :detail
