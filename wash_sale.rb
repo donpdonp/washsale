@@ -5,7 +5,7 @@ class WashSale
 
   def initialize(inventory, sorted_records)
     @records = sorted_records
-    @balances = []
+    @inventory = inventory.map{|i| Statement.new(i)}
   end
 
   def buys
@@ -24,8 +24,8 @@ class WashSale
     @balances.each {}
   end
 
-  def balances_display
-    words = @balances.map do |b|
+  def inventory_display
+    words = @inventory.map do |b|
       "#{b.time.strftime("%b-%d")} #{b.amount}@#{b.price} $#{"%0.2f"%b.value.to_f}"
     end
     puts "Inventory:"
@@ -42,7 +42,7 @@ class WashSale
       when "earned"
         puts "sell #{record.value_display}"
       end
-      balances_display
+      inventory_display
     end
   end
 

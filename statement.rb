@@ -4,7 +4,12 @@ require 'bigdecimal'
 class Statement
   attr_reader :time, :action, :value, :balance, :detail
 
-  def initialize(row)
+  def initialize(values)
+    load_csv(values) if values.is_a?(CSV::Row)
+    load_json(values) if values.is_a?(Hash)
+  end
+
+  def load_csv(row)
     @id = row[0]
     @time = Time.parse(row[1])
     @action = row[2]
@@ -12,6 +17,14 @@ class Statement
     @detail = info_parse(@action, @info)
     @value = BigDecimal.new(row[4])
     @balance = BigDecimal.new(row[5])
+  end
+
+  def load_json(json)
+    @time = Time.parse(json["time"])
+    @detail = {}
+    @detail[:amount] = BigDecimal.new(json["amount"])
+    @detail[:price] = BigDecimal.new(json["price"])
+    @value = amount * price
   end
 
   def info_parse(action, info)
