@@ -1,11 +1,12 @@
 require 'csv'
 require_relative 'statement'
+require_relative 'inventory'
 
 class WashSale
 
   def initialize(inventory, sorted_records)
     @records = sorted_records
-    @inventory = inventory.map{|i| Statement.new(i)}
+    @inventory = Inventory.new(inventory)
   end
 
   def buys
@@ -26,7 +27,12 @@ class WashSale
 
   def inventory_display
     words = @inventory.map do |b|
-      "#{b.time.strftime("%b-%d")} #{"%0.2f"%b.amount.to_f}@#{"%0.2f"%b.price.to_f} $#{"%0.2f"%b.value.to_f}"
+      if b.time.year == Time.now.year
+        date = b.time.strftime("%b-%d")
+      else
+        date = b.time.strftime("%Y-%b-%d")
+      end
+      "#{date} #{"%0.2f"%b.amount.to_f}@#{"%0.2f"%b.price.to_f} $#{"%0.2f"%b.value.to_f}"
     end
     puts "Inventory:"
     words.each {|line| puts line}
