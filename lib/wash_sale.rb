@@ -4,10 +4,11 @@ require_relative 'inventory'
 
 class WashSale
 
-  attr_reader :inventory
+  attr_reader :inventory, :taxes
 
   def initialize(inventory)
     @inventory = inventory
+    @taxes = []
   end
 
   def buys
@@ -23,9 +24,9 @@ class WashSale
   end
 
   def sell(record)
-    if record.amount > inventory.total_coins
-      raise "Error, insufficient inventory for #{record}"
-    end
+    affected_balances = inventory.remove(record.amount)
+    duration_seconds = record.time - affected_balances[0].time
+    puts "sold from #{duration_seconds/60/60/24} days"
   end
 
   def wash_sale(record)

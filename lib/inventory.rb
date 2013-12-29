@@ -9,6 +9,19 @@ class Inventory
     @balances << statement
   end
 
+  def sufficient_coins?(amount)
+    total_coins >= amount
+  end
+
+  def remove(amount)
+    raise "Insufficient inventory of #{total_coins} to remove #{amount}" unless sufficient_coins?(amount)
+    @balances.select do |balance|
+      if balance.amount >= amount
+        balance.amount -= amount
+      end
+    end
+  end
+
   def total_coins
     @balances.reduce(0){|memo, record| memo + record.amount}
   end

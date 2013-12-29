@@ -24,6 +24,7 @@ describe WashSale do
       @washer.wash_sale(record)
       correct_inventory = Inventory.new([{"time" => "2011-02-01", "amount" => 8, "price" => 0}])
       @washer.inventory.must_equal correct_inventory
+      #@washer.taxes.must_equal
     end
 
     it "handles a sale of 15 (insufficient inventory)" do

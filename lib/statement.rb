@@ -30,7 +30,6 @@ class Statement
     @detail = {}
     @detail[:amount] = BigDecimal.new(json["amount"])
     @detail[:price] = BigDecimal.new(json["price"])
-    @value = amount * price
   end
 
   def info_parse(action, info)
@@ -50,6 +49,10 @@ class Statement
 
   def amount
     @detail[:amount]
+  end
+
+  def amount=(new_amount)
+    @detail[:amount] = new_amount
   end
 
   def price
