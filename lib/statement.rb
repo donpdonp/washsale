@@ -6,7 +6,7 @@ class Statement
   attr_reader :time, :action, :value, :balance, :detail
 
   def initialize(values)
-    if values.is_a?(CSV::Row)
+    if values.is_a?(CSV::Row) || values.is_a?(Array)
       load_csv(values)
     elsif values.is_a?(Hash)
       load_json(values)

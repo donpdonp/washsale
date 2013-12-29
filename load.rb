@@ -4,8 +4,10 @@ require 'json'
 require 'wash_sale.rb'
 
 puts "Loading #{ARGV}"
-inventory = JSON.load(File.open("inventory.json"))
+inventory_hash = JSON.load(File.open("inventory.json"))
+inventory = Inventory.new(inventory_hash)
 puts "Inventory #{inventory.inspect}"
+
 records = []
 ARGV.each do |filename|
   CSV.foreach(filename, {headers:true}) do |row|
@@ -14,5 +16,9 @@ ARGV.each do |filename|
 end
 records = records.sort_by(&:time)
 puts "#{records.size} records loaded. from #{records.first.time} to #{records.last.time}"
-washer = WashSale.new(inventory, records)
-washer.wash_sales
+
+washer = WashSale.new(inventory)
+records.each do |record|
+  washer.wash_sale(record)
+  washer.inventory.display
+end
