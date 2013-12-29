@@ -1,4 +1,6 @@
 class Inventory
+  attr_reader :balances
+
   def initialize(inventory)
     @balances = inventory.map{|i| Statement.new(i)}
   end
@@ -17,6 +19,15 @@ class Inventory
 
   def total_coins
     @balances.reduce(0){|memo, record| memo + record.amount}
+  end
+
+  def ==(inv)
+    return false if inv.balances.size != balances.size
+    rejects = false
+    balances.each_with_index do |balance, idx|
+      rejects = true unless balance == inv.balances[idx]
+    end
+    !rejects
   end
 
   def display

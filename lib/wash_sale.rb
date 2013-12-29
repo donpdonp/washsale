@@ -23,7 +23,7 @@ class WashSale
   end
 
   def sell(record)
-    if record.value > inventory.total
+    if record.amount > inventory.total_coins
       raise "Error, insufficient inventory for #{record}"
     end
   end
@@ -31,10 +31,9 @@ class WashSale
   def wash_sale(record)
     case record.action
     when "spent"
-      puts " buy #{"%0.2f"%record.amount} @ #{"%0.2f"%record.price}"
       buy(record)
     when "earned"
-      puts "sell #{record.value_display}"
+      sell(record)
     end
   end
 

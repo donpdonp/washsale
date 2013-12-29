@@ -56,6 +56,10 @@ class Statement
     @detail[:price]
   end
 
+  def ==(s)
+    time == s.time && amount == s.amount && price == s.price
+  end
+
   def value_display
     "%9.4f" % @value.to_f
   end
