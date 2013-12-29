@@ -1,6 +1,7 @@
-require 'statement'
 require 'csv'
 require 'json'
+
+require 'statement'
 
 describe Statement do
   describe "decodes mtgox csv" do
