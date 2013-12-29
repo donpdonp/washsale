@@ -4,3 +4,4 @@ Gemfile.lock
 *.json
 go
 .bundle/
+gems/
