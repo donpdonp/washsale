@@ -6,8 +6,13 @@ class Statement
   attr_reader :time, :action, :value, :balance, :detail
 
   def initialize(values)
-    load_csv(values) if values.is_a?(CSV::Row)
-    load_json(values) if values.is_a?(Hash)
+    if values.is_a?(CSV::Row)
+      load_csv(values)
+    elsif values.is_a?(Hash)
+      load_json(values)
+    else
+      raise "unknown values of #{values.class.name}"
+    end
   end
 
   def load_csv(row)
