@@ -9,14 +9,6 @@ class Inventory
     @balances << statement
   end
 
-  def each(&f)
-    @balances.each{|b| yield b}
-  end
-
-  def map(&f)
-    @balances.map{|b| yield b}
-  end
-
   def total_coins
     @balances.reduce(0){|memo, record| memo + record.amount}
   end
@@ -24,7 +16,7 @@ class Inventory
   def ==(inv)
     return false if inv.balances.size != balances.size
     rejects = false
-    balances.each_with_index do |balance, idx|
+    @balances.each_with_index do |balance, idx|
       rejects = true unless balance == inv.balances[idx]
     end
     !rejects
