@@ -26,10 +26,10 @@ class Statement
   end
 
   def load_json(json)
-    @time = Time.parse(json["time"])
+    @time = json[:time].is_a?(Time) ? json[:time] : Time.parse(json[:time])
     @detail = {}
-    @detail[:amount] = BigDecimal.new(json["amount"])
-    @detail[:price] = BigDecimal.new(json["price"])
+    @detail[:amount] = BigDecimal.new(json[:amount])
+    @detail[:price] = BigDecimal.new(json[:price])
   end
 
   def info_parse(action, info)

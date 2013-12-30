@@ -17,7 +17,7 @@ describe Statement do
   end
 
   it "decodes json" do
-    row = {"time" => "2011-02-01", "amount" => 220, "price" => 0}
+    row = {time: "2011-02-01", amount: 220, price: 0}
     Statement.new(row).must_be_instance_of Statement
   end
 end

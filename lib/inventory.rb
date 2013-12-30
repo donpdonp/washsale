@@ -2,8 +2,8 @@ class Inventory
   attr_reader :balances, :dollars
 
   def initialize(inventory)
-    @balances = inventory["coins"].map{|i| Statement.new(i)}
-    @dollars = inventory["dollars"]
+    @balances = inventory[:coins].map{|i| Statement.new(i)}
+    @dollars = inventory[:dollars]
   end
 
   def <<(statement)
@@ -16,11 +16,20 @@ class Inventory
 
   def remove(amount)
     raise "Insufficient inventory of #{total_coins} to remove #{amount}" unless sufficient_coins?(amount)
-    @balances.select do |balance|
-      if balance.amount >= amount
-        balance.amount -= amount
+    reductions = @balances.reduce([]) do |balances, balance|
+      if amount > 0
+        if balance.amount >= amount
+          partial_amount = amount
+          balance.amount -= amount
+        else
+          partial_amount = balance.amount
+          balance.amount = 0
+        end
+        balances << {statement: balance, reduce: partial_amount}
       end
     end
+    @balances = @balances.select{|b| b.amount > 0} # clean out empties
+    reductions
   end
 
   def total_coins

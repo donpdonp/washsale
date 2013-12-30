@@ -4,7 +4,8 @@ require 'json'
 require 'wash_sale.rb'
 
 puts "Loading #{ARGV}"
-inventory_hash = JSON.load(File.open("inventory.json"))
+inventory_hash = JSON.parse(File.open("inventory.json").read,{symbolize_names: true})
+
 inventory = Inventory.new(inventory_hash)
 puts "Initial Inventory"
 inventory.display

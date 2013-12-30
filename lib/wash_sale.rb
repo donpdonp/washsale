@@ -1,6 +1,7 @@
 require 'csv'
 require_relative 'statement'
 require_relative 'inventory'
+require_relative 'tax'
 
 class WashSale
 
@@ -24,9 +25,17 @@ class WashSale
   end
 
   def sell(record)
-    records = inventory.remove(record.amount)
-    duration_seconds = record.time - records[0].time
-    puts "sold from #{duration_seconds/60/60/24} days"
+    reductions = inventory.remove(record.amount)
+    puts "#{reductions.size} reductions to sell off #{record.amount.to_f} coins"
+    reductions.map do |reduction|
+      duration_seconds = record.time - reduction[:statement].time
+      duration_days = duration_seconds/60/60/24
+      value = reduction[:reduce] * record.price
+      puts "Sale amount #{reduction[:reduce].to_f} price #{record.price.to_f}"
+      type = duration_days >= 30 ? "ltcg" : "stcg"
+      puts "Tax event time: #{record.time} type: #{type} (#{duration_days.to_i} days) value: #{value.to_f}"
+      Tax.new({time: record.time, type: type, value: value})
+    end
   end
 
   def wash_sale(record)
