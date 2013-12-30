@@ -22,7 +22,7 @@ class WashSale
 
   def buy(record)
     value = record.amount * record.price
-    raise "Insufficient dollars of #{inventory.dollars.to_f} to buy #{value}" if inventory.dollars < value
+    raise "Insufficient dollars of #{inventory.dollars.to_f} to buy #{value.to_f}" if inventory.dollars < value
     @inventory << record
     @inventory.dollars -= value
   end
