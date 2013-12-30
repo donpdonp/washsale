@@ -37,7 +37,7 @@ class WashSale
       inventory.dollars += value
       puts "Sale amount #{reduction[:reduce].to_f} price #{record.price.to_f}"
       type = duration_days >= 30 ? "ltcg" : "stcg"
-      puts "Tax event time: #{record.time} type: #{type} (#{duration_days.to_i} days) value: #{value.to_f}"
+      puts "Tax event type: #{type} (#{duration_days.to_i} days) value: #{value.to_f}"
       tax = Tax.new({time: record.time, type: type, value: value})
       @taxes << tax
       tax

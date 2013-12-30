@@ -7,7 +7,7 @@ puts "Loading #{ARGV}"
 inventory_hash = JSON.parse(File.open("inventory.json").read,{symbolize_names: true})
 
 inventory = Inventory.new(inventory_hash)
-puts "Initial Inventory"
+puts "** Initial Inventory"
 inventory.display
 
 records = []
@@ -17,15 +17,17 @@ ARGV.each do |filename|
   end
 end
 records = records.sort_by(&:time)
-puts "#{records.size} records loaded. from #{records.first.time} to #{records.last.time}"
+puts "** #{records.size} records loaded. from #{records.first.time} to #{records.last.time}"
 
 washer = WashSale.new(inventory)
 records.each do |record|
   case record.action
   when "spent"
-    puts " buy #{"%0.2f"%record.amount} @ #{"%0.2f"%record.price}"
+    puts "= buy #{"%0.2f"%record.amount} @ #{"%0.2f"%record.price}"
   when "earned"
-    puts "sell #{"%0.2f"%record.amount} @ #{"%0.2f"%record.price}"
+    puts "=sell #{"%0.2f"%record.amount} @ #{"%0.2f"%record.price}"
+  else
+    puts "=#{record.action} skip"
   end
 
   washer.wash_sale(record)
