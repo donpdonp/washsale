@@ -1,13 +1,15 @@
 class Inventory
   attr_reader :balances
-  attr_accessor :dollars
 
-  def initialize(inventory)
-    @balances = inventory[:coins].map{|i| Statement.new(i)}
-    @dollars = inventory[:dollars]
+  def initialize(code)
+    @code = code
+    @balances = []
   end
 
   def <<(statement)
+    if statement.is_a?(Hash)
+      statement = Statement.new(statement)
+    end
     @balances << statement
   end
 
@@ -33,7 +35,7 @@ class Inventory
     reductions
   end
 
-  def total_coins
+  def total
     @balances.reduce(0){|memo, record| memo + record.amount}
   end
 
@@ -58,7 +60,7 @@ class Inventory
     end
     puts "Inventory:"
     words.each {|line| puts line}
-    puts "Total coins: #{"%0.2f" % total_coins.to_f} dollars: $#{"%0.2f" % @dollars.to_f}"
+    puts "Total #{"%0.2f" % total_coins.to_f} #{code}"
   end
 
 end

@@ -6,9 +6,14 @@ require 'wash_sale.rb'
 puts "Loading #{ARGV}"
 inventory_hash = JSON.parse(File.open("inventory.json").read,{symbolize_names: true})
 
-inventory = Inventory.new(inventory_hash)
+coins, fiat = inventory_hash.map do |code, records|
+  inv = Inventory.new(code)
+  records.each {|h| inv << h}
+  inv
+end
 puts "** Initial Inventory"
-inventory.display
+coins.display
+fiat.display
 
 records = []
 ARGV.each do |filename|
@@ -16,10 +21,11 @@ ARGV.each do |filename|
     records << Statement.new(row)
   end
 end
+
 records = records.sort_by(&:time)
 puts "** #{records.size} records loaded. from #{records.first.time} to #{records.last.time}"
 
-washer = WashSale.new(inventory)
+washer = WashSale.new(coins, fiat)
 records.each do |record|
   case record.action
   when "spent"
@@ -31,7 +37,8 @@ records.each do |record|
   end
 
   washer.wash_sale(record)
-  washer.inventory.display
+  washer.coins.display
+  washer.fiat.display
 end
 
 puts "** Final inventory"

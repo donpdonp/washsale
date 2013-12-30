@@ -4,20 +4,22 @@ describe WashSale do
   before do
   end
 
-  it "loads initial data" do
-    initial_items = {coins: [{time: "2011-02-01", amount: 20, price: 0} ],
-                     dollars: 0}
-    inventory = Inventory.new(initial_items)
-    washer = WashSale.new(inventory)
+  it "start with empty inventory" do
+    washer = WashSale.new(Inventory.new('btc'), Inventory.new('usd'))
     washer.must_be_instance_of WashSale
-    washer.inventory.must_equal inventory
+    washer.coins.total.must_equal 0
+    washer.fiat.total.must_equal 0
   end
 
   describe "handles sales from inventory 9" do
     before do
-      @initial_items = {coins: [{time: "2011-02-01", amount: 9, price: 0} ],
-                        dollars: 0}
-      @washer = WashSale.new(Inventory.new(@initial_items))
+      initial_coins = {time: "2011-02-01", amount: 9, price: 0}
+      initial_fiat =  {time: "2011-02-01", amount: 0, price: 0}
+      coins = Inventory.new('btc')
+      coins << Statement.new(initial_coins)
+      fiat = Inventory.new('usd')
+      fiat << Statement.new(initial_fiat)
+      @washer = WashSale.new(coins, fiat)
     end
 
     it "handles a sale of 1 coin" do

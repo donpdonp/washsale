@@ -5,10 +5,11 @@ require_relative 'tax'
 
 class WashSale
 
-  attr_reader :inventory, :taxes
+  attr_reader :coins, :fiat, :taxes
 
-  def initialize(inventory)
-    @inventory = inventory
+  def initialize(coins, fiat)
+    @coins = coins
+    @fiat = fiat
     @taxes = []
   end
 
@@ -53,4 +54,7 @@ class WashSale
     end
   end
 
+  def tax_time
+
+  end
 end
