@@ -5,7 +5,8 @@ describe WashSale do
   end
 
   it "loads initial data" do
-    initial_items = [ {"time" => "2011-02-01", "amount" => 20, "price" => 0} ]
+    initial_items = {"coins" => [{"time" => "2011-02-01", "amount" => 20, "price" => 0} ],
+                     "dollars" => 0}
     inventory = Inventory.new(initial_items)
     washer = WashSale.new(inventory)
     washer.must_be_instance_of WashSale
@@ -14,7 +15,8 @@ describe WashSale do
 
   describe "handles sales from inventory 9" do
     before do
-      @initial_items = [ {"time" => "2011-02-01", "amount" => 9, "price" => 0} ]
+      @initial_items = {"coins" => [{"time" => "2011-02-01", "amount" => 9, "price" => 0} ],
+                        "dollars" => 0}
       @washer = WashSale.new(Inventory.new(@initial_items))
     end
 
@@ -22,7 +24,7 @@ describe WashSale do
       row = '127,"2013-04-16 00:08:51",earned,"BTC sold: [tid:1000000000000000] 1.00000000 BTC at $83.02111",0.83519,526.87448'
       record = Statement.new(CSV.parse_line(row))
       @washer.wash_sale(record)
-      correct_inventory = Inventory.new([{"time" => "2011-02-01", "amount" => 8, "price" => 0}])
+      correct_inventory = Inventory.new({"coins"=>[{"time" => "2011-02-01", "amount" => 8, "price" => 0}], "dollars"=>0})
       @washer.inventory.must_equal correct_inventory
       #@washer.taxes.must_equal
     end

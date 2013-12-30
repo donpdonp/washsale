@@ -1,8 +1,9 @@
 class Inventory
-  attr_reader :balances
+  attr_reader :balances, :dollars
 
   def initialize(inventory)
-    @balances = inventory.map{|i| Statement.new(i)}
+    @balances = inventory["coins"].map{|i| Statement.new(i)}
+    @dollars = inventory["dollars"]
   end
 
   def <<(statement)

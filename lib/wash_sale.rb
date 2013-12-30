@@ -24,8 +24,8 @@ class WashSale
   end
 
   def sell(record)
-    affected_balances = inventory.remove(record.amount)
-    duration_seconds = record.time - affected_balances[0].time
+    records = inventory.remove(record.amount)
+    duration_seconds = record.time - records[0].time
     puts "sold from #{duration_seconds/60/60/24} days"
   end
 
