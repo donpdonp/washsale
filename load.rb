@@ -42,7 +42,8 @@ records.each do |record|
 end
 
 puts "** Final inventory"
-washer.inventory.display
+washer.coins.display
+washer.fiat.display
 puts "** Tax events"
 washer.taxes.each do |tax|
   puts "Tax #{tax.time} #{tax.type} $#{"%0.2f"%tax.value.to_f}"

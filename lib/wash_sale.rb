@@ -24,8 +24,8 @@ class WashSale
   def buy(record)
     value = record.amount * record.price
     raise "Insufficient dollars of #{fiat.total.to_f} to buy #{value.to_f}" if fiat.total < value
-    coins << Statement.new({time:record.time, amount:value, price: 0})
-    fiat.remove(record.amount)
+    coins << Statement.new({time:record.time, amount:record.amount, price: record.price})
+    fiat.remove(value)
   end
 
   def sell(record)
@@ -33,8 +33,8 @@ class WashSale
     puts "#{reductions.size} reductions to sell off #{record.amount.to_f} coins"
     reductions.map do |reduction|
       value = reduction[:reduce] * record.price
+      puts "Sale amount #{reduction[:reduce].to_f} price #{record.price.to_f} = #{value.to_f}"
       fiat << Statement.new({time:record.time, amount:value, price: 0})
-      puts "Sale amount #{reduction[:reduce].to_f} price #{record.price.to_f}"
     end
     tax_check(record.time)
   end

@@ -57,7 +57,7 @@ class Inventory
       end
       "#{date} #{"%0.2f"%b.amount.to_f}@#{"%0.2f"%b.price.to_f} $#{"%0.2f"%b.value.to_f}"
     end
-    puts "Inventory:"
+    puts "Inventory #{@code}:"
     words.each {|line| puts line}
     puts "Total #{"%0.2f" % total.to_f}#{@code}"
   end
