@@ -13,12 +13,12 @@ class Inventory
     @balances << statement
   end
 
-  def sufficient_coins?(amount)
-    total_coins >= amount
+  def sufficient?(amount)
+    total >= amount
   end
 
   def remove(amount)
-    raise "Insufficient inventory of #{total_coins} to remove #{amount}" unless sufficient_coins?(amount)
+    raise "Insufficient inventory of #{total}#{@code} to remove #{amount}" unless sufficient?(amount)
     reductions = @balances.reduce([]) do |balances, balance|
       if amount > 0
         if balance.amount >= amount
@@ -41,7 +41,6 @@ class Inventory
 
   def ==(inv)
     return false if inv.balances.size != balances.size
-    return false if inv.dollars != @dollars
     rejects = false
     @balances.each_with_index do |balance, idx|
       rejects = true unless balance == inv.balances[idx]
@@ -60,7 +59,7 @@ class Inventory
     end
     puts "Inventory:"
     words.each {|line| puts line}
-    puts "Total #{"%0.2f" % total_coins.to_f} #{code}"
+    puts "Total #{"%0.2f" % total.to_f}#{@code}"
   end
 
 end
