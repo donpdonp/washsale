@@ -56,7 +56,7 @@ class Inventory
     end
     puts "Inventory:"
     words.each {|line| puts line}
-    puts "Total coins: #{"%0.2f" % total_coins.to_f}"
+    puts "Total coins: #{"%0.2f" % total_coins.to_f} dollars: $#{@dollars}"
   end
 
 end

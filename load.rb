@@ -31,3 +31,10 @@ records.each do |record|
   washer.wash_sale(record)
   washer.inventory.display
 end
+
+puts "** Final inventory"
+washer.inventory.display
+puts "** Tax events"
+washer.taxes.each do |tax|
+  puts "Tax #{tax.time} #{tax.type} $#{"%0.2f"%tax.value.to_f}"
+end
