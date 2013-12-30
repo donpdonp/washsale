@@ -1,5 +1,6 @@
 class Inventory
-  attr_reader :balances, :dollars
+  attr_reader :balances
+  attr_accessor :dollars
 
   def initialize(inventory)
     @balances = inventory[:coins].map{|i| Statement.new(i)}
@@ -38,6 +39,7 @@ class Inventory
 
   def ==(inv)
     return false if inv.balances.size != balances.size
+    return false if inv.dollars != @dollars
     rejects = false
     @balances.each_with_index do |balance, idx|
       rejects = true unless balance == inv.balances[idx]

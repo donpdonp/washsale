@@ -21,7 +21,10 @@ class WashSale
   end
 
   def buy(record)
+    value = record.amount * record.price
+    raise "Insufficient dollars of #{inventory.dollars.to_f} to buy #{value}" if inventory.dollars < value
     @inventory << record
+    @inventory.dollars -= value
   end
 
   def sell(record)
@@ -31,6 +34,7 @@ class WashSale
       duration_seconds = record.time - reduction[:statement].time
       duration_days = duration_seconds/60/60/24
       value = reduction[:reduce] * record.price
+      inventory.dollars += value
       puts "Sale amount #{reduction[:reduce].to_f} price #{record.price.to_f}"
       type = duration_days >= 30 ? "ltcg" : "stcg"
       puts "Tax event time: #{record.time} type: #{type} (#{duration_days.to_i} days) value: #{value.to_f}"
