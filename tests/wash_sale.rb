@@ -29,7 +29,7 @@ describe WashSale do
       correct_coins = Inventory.new('btc')
       correct_coins << Statement.new({time: "2011-02-01", amount: 8, price: 0})
       correct_dollars = Inventory.new('usd')
-      correct_dollars << Statement.new({time: "2013-04-16", amount: 83, price: 0})
+      correct_dollars << Statement.new({time: "2013-04-16", amount: 83, price: 1})
       @washer.coins.must_equal correct_coins
       @washer.fiat.must_equal correct_dollars
     end

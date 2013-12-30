@@ -3,7 +3,7 @@ require 'bigdecimal'
 require 'csv'
 
 class Statement
-  attr_reader :time, :action, :value, :balance, :detail
+  attr_reader :time, :action, :amount, :price
 
   def initialize(values)
     if values.is_a?(CSV::Row) || values.is_a?(Array)
@@ -16,20 +16,22 @@ class Statement
   end
 
   def load_csv(row)
-    @id = row[0]
+    #@id = row[0]
     @time = Time.parse(row[1])
     @action = row[2]
-    @info = row[3]
-    @detail = info_parse(@action, @info)
-    @value = BigDecimal.new(row[4])
-    @balance = BigDecimal.new(row[5])
+    info = row[3]
+    detail = info_parse(@action, info)
+    @amount = detail[:amount]
+    @price = detail[:price]
+    #@value = BigDecimal.new(row[4])
+    #@balance = BigDecimal.new(row[5])
   end
 
   def load_json(json)
     @time = json[:time].is_a?(Time) ? json[:time] : Time.parse(json[:time])
     @detail = {}
-    @detail[:amount] = BigDecimal.new(json[:amount])
-    @detail[:price] = BigDecimal.new(json[:price])
+    @amount = BigDecimal.new(json[:amount])
+    @price = BigDecimal.new(json[:price])
   end
 
   def info_parse(action, info)
@@ -47,16 +49,12 @@ class Statement
      amount: BigDecimal.new(matches[4]), price: BigDecimal.new(matches[6])}
   end
 
-  def amount
-    @detail[:amount]
-  end
-
   def amount=(new_amount)
-    @detail[:amount] = new_amount
+    @amount = new_amount
   end
 
-  def price
-    @detail[:price]
+  def value
+    @amount * @price
   end
 
   def ==(s)
