@@ -34,7 +34,7 @@ class WashSale
     reductions.map do |reduction|
       value = reduction[:reduce] * record.price
       puts "Sale amount #{reduction[:reduce].to_f} price #{record.price.to_f} = #{value.to_f}"
-      fiat << Statement.new({time:record.time, amount:value, price: 0})
+      fiat << Statement.new({time:record.time, amount:value, price: 1})
     end
   end
 
