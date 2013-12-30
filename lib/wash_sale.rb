@@ -25,7 +25,7 @@ class WashSale
     value = record.amount * record.price
     raise "Insufficient dollars of #{fiat.total.to_f} to buy #{value.to_f}" if fiat.total < value
     coins << Statement.new({time:record.time, amount:record.amount, price: record.price})
-    fiat.remove(value)
+    @fiat.remove(value)
   end
 
   def sell(record)
@@ -34,7 +34,7 @@ class WashSale
     reductions.map do |reduction|
       value = reduction[:reduce] * record.price
       puts "Sale amount #{reduction[:reduce].to_f} price #{record.price.to_f} = #{value.to_f}"
-      fiat << Statement.new({time:record.time, amount:value, price: 1})
+      Statement.new({time:record.time, amount:value, price: 1})
     end
   end
 
@@ -43,18 +43,20 @@ class WashSale
     when "spent"
       buy(record)
     when "earned"
-      sell(record)
-      tax_check(record.time)
+      reductions = sell(record)
+      reductions.each{|r| fiat << r}
+      tax_check(reductions, record.time)
+      reductions
     end
   end
 
-  def tax_check(time)
-    puts "tax checking #{@fiat.balances.inspect}"
-    @fiat.balances.reduce([]) do |taxes, balance|
+  def tax_check(balances, time)
+    balances.reduce([]) do |taxes, balance|
       duration_seconds = time - balance.time
       duration_days = duration_seconds/60/60/24
       if duration_days > 30
-        tax = tax_time(balance, duration_days)
+        puts "Tax event LTCG (#{duration_days.to_i} days) value: #{balance.amount.to_f}"
+        tax = Tax.new({time: balance.time, type: "ltcg", value: balance.amount})
         taxes << tax
         @taxes << tax
       end
@@ -62,9 +64,4 @@ class WashSale
     end
   end
 
-  def tax_time(sale, sale_days)
-    type = sale_days >= 30 ? "ltcg" : "stcg"
-    puts "Tax event type: #{type} (#{sale_days.to_i} days) value: #{sale.amount.to_f}"
-    tax = Tax.new({time: sale.time, type: type, value: sale.amount})
-  end
 end

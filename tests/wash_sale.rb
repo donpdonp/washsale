@@ -35,7 +35,7 @@ describe WashSale do
     end
 
     it "taxes (Feb 2013)" do
-      @washer.tax_check(Time.parse("2013-02-01"))
+      @washer.tax_check(@washer.fiat.balances, Time.parse("2013-02-01"))
       @washer.taxes.must_equal []
     end
 
@@ -61,7 +61,7 @@ describe WashSale do
 
     it "purchase of 1 coin" do
       row = '8,"2013-04-17 00:00:00",spent,"BTC bought: [tid:10000] 1.00000000 BTC at $39.00000",13.24305,726.06053'
-      taxes = @washer.wash_sale(Statement.new(CSV.parse_line(row)))
+      @washer.wash_sale(Statement.new(CSV.parse_line(row)))
 
       correct_coins = Inventory.new('btc')
       correct_coins << Statement.new({time: "2013-04-17", amount: 1, price: 39})
@@ -75,7 +75,7 @@ describe WashSale do
       correct_taxes = [{time: "2013-02-01",
                         type:"ltcg", value:BigDecimal.new("39")}
                       ].map{|t| Tax.new(t)}
-      taxes = @washer.tax_check(Time.parse("2013-06-01"))
+      taxes = @washer.tax_check(@washer.fiat.balances, Time.parse("2013-06-01"))
       taxes.must_equal correct_taxes
     end
   end
