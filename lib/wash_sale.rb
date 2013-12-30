@@ -34,7 +34,9 @@ class WashSale
       puts "Sale amount #{reduction[:reduce].to_f} price #{record.price.to_f}"
       type = duration_days >= 30 ? "ltcg" : "stcg"
       puts "Tax event time: #{record.time} type: #{type} (#{duration_days.to_i} days) value: #{value.to_f}"
-      @taxes << Tax.new({time: record.time, type: type, value: value})
+      tax = Tax.new({time: record.time, type: type, value: value})
+      @taxes << tax
+      tax
     end
   end
 

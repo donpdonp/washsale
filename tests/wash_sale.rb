@@ -26,8 +26,8 @@ describe WashSale do
       taxes = @washer.wash_sale(record)
       correct_inventory = Inventory.new({coins:[{time: "2011-02-01", amount: 8, price: 0}], dollars:0})
       @washer.inventory.must_equal correct_inventory
-      correct_taxes = [Tax.new({time: Time.parse("2013-04-16 00:08:51"),
-                                type:"ltcg",value:BigDecimal.new("83")})]
+      correct_taxes = [Tax.new({time: "2013-04-16 00:08:51",
+                                type:"ltcg", value:BigDecimal.new("83")})]
       taxes.must_equal correct_taxes
     end
 
