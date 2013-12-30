@@ -29,9 +29,9 @@ washer = WashSale.new(coins, fiat)
 records.each do |record|
   case record.action
   when "spent"
-    puts "= buy #{"%0.2f"%record.amount} @ #{"%0.2f"%record.price}"
+    puts "= buy #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount} @ #{"%0.2f"%record.price}"
   when "earned"
-    puts "=sell #{"%0.2f"%record.amount} @ #{"%0.2f"%record.price}"
+    puts "=sell #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount} @ #{"%0.2f"%record.price}"
   else
     puts "=#{record.action} skip"
   end

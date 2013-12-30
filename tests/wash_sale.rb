@@ -35,6 +35,7 @@ describe WashSale do
     end
 
     it "taxes (Feb 2013)" do
+      @washer.tax_check(Time.parse("2013-02-01"))
       @washer.taxes.must_equal []
     end
 
@@ -52,7 +53,7 @@ describe WashSale do
       coins = Inventory.new('btc')
 
       fiat = Inventory.new('usd')
-      initial_fiat =  {time: "2011-02-01", amount: 39, price: 0}
+      initial_fiat =  {time: "2013-02-01", amount: 39, price: 0}
       fiat << Statement.new(initial_fiat)
 
       @washer = WashSale.new(coins, fiat)
@@ -70,12 +71,12 @@ describe WashSale do
       @washer.fiat.must_equal correct_fiat
     end
 
-    it "taxes" do
-      correct_taxes = [{time: "2013-04-16 00:08:51",
-                        type:"ltcg", value:BigDecimal.new("40")}
-                      ]
-      taxes = @washer.tax_check(Time.now)
-      taxes.must_equal correct_taxes.map{|t| Tax.new(t)}
+    it "taxes (June 2013)" do
+      correct_taxes = [{time: "2013-02-01",
+                        type:"ltcg", value:BigDecimal.new("39")}
+                      ].map{|t| Tax.new(t)}
+      taxes = @washer.tax_check(Time.parse("2013-06-01"))
+      taxes.must_equal correct_taxes
     end
   end
 end
