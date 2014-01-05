@@ -67,4 +67,13 @@ class Statement
   def value_display
     "%9.4f" % @value.to_f
   end
+
+  def inspect
+    if time.year == Time.now.year
+      date = time.strftime("%b-%d")
+    else
+      date = time.strftime("%Y-%b-%d")
+    end
+    "#{date} #{action} #{amount}@#{price} ##{txid}"
+  end
 end

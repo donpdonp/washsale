@@ -48,16 +48,8 @@ class Inventory
   end
 
   def display
-    words = @balances.map do |b|
-      if b.time.year == Time.now.year
-        date = b.time.strftime("%b-%d")
-      else
-        date = b.time.strftime("%Y-%b-%d")
-      end
-      "#{date} #{"%0.2f"%b.amount.to_f}@#{"%0.2f"%b.price.to_f} $#{"%0.2f"%b.value.to_f}"
-    end
     puts "Inventory #{@code}:"
-    words.each {|line| puts line}
+    @balances.each {|line| puts line.inspect}
     puts "Total #{"%0.2f" % total.to_f}#{@code}"
   end
 

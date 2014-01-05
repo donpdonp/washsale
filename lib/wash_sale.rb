@@ -33,7 +33,7 @@ class WashSale
     puts "#{reductions.size} reductions to sell off #{record.amount.to_f} coins"
     reductions.map do |reduction|
       value = reduction[:reduce] * record.price
-      puts "Sale amount #{reduction[:reduce].to_f} price #{record.price.to_f} = #{value.to_f} tx #{reduction[:statement].txid}"
+      puts "Sale: #{reduction[:reduce].to_f} @ #{record.price.to_f} = #{value.to_f} linked to tx #{reduction[:statement].txid}"
       Statement.new({time:record.time, amount:value, price: 1,
                      txid: record.txid, link: reduction[:statement]})
     end
@@ -52,7 +52,7 @@ class WashSale
   end
 
   def tax_check(balances, time)
-    puts "tax checking #{time} on #{balances.inspect}"
+    puts "tax checking #{time.to_date} on #{balances.inspect}"
     balances.reduce([]) do |taxes, balance|
       duration_seconds = time - balance.link.time
       duration_days = duration_seconds/60/60/24
