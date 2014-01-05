@@ -51,6 +51,7 @@ class WashSale
   end
 
   def tax_check(balances, time)
+    puts "tax checking #{time} on #{balances.inspect}"
     balances.reduce([]) do |taxes, balance|
       duration_seconds = time - balance.time
       duration_days = duration_seconds/60/60/24

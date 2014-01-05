@@ -3,7 +3,7 @@ require 'bigdecimal'
 require 'csv'
 
 class Statement
-  attr_reader :time, :action, :amount, :price
+  attr_reader :time, :action, :txid, :amount, :price, :link
 
   def initialize(values)
     if values.is_a?(CSV::Row) || values.is_a?(Array)
@@ -23,26 +23,26 @@ class Statement
     detail = info_parse(@action, info)
     @amount = detail[:amount]
     @price = detail[:price]
+    @txid = detail[:tid]
     #@value = BigDecimal.new(row[4])
     #@balance = BigDecimal.new(row[5])
   end
 
   def load_json(json)
     @time = json[:time].is_a?(Time) ? json[:time] : Time.parse(json[:time])
-    @detail = {}
     @amount = BigDecimal.new(json[:amount])
     @price = BigDecimal.new(json[:price])
   end
 
   def info_parse(action, info)
-    #"BTC sold: [tid:1362024956429632] 1.20000000 BTC at $32.13310"
     case action
     when "earned", "spent"
-      earned_info_parse(info)
+      buysell_info_parse(info)
     end
   end
 
-  def earned_info_parse(info)
+  def buysell_info_parse(info)
+    #"BTC sold: [tid:1362024956429632] 1.20000000 BTC at $32.13310"
     info_match = /(\w+) (bought|sold): \[tid:(\d+)\] (\d+\.\d+).(\w+) at \$((\d+,)?\d+\.\d+)/
     matches = info_match.match(info)
     {currency: matches[1], buysell: matches[2], tid: matches[3],
