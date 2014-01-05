@@ -21,9 +21,11 @@ class Statement
     @action = row[2]
     info = row[3]
     detail = info_parse(@action, info)
-    @amount = detail[:amount]
-    @price = detail[:price]
-    @txid = detail[:txid]
+    if detail
+      @amount = detail[:amount]
+      @price = detail[:price]
+      @txid = detail[:txid]
+    end
   end
 
   def load_json(json)
@@ -43,10 +45,11 @@ class Statement
 
   def buysell_info_parse(info)
     #"BTC sold: [tid:1362024956429632] 1.20000000 BTC at $32.13310"
-    info_match = /(\w+) (bought|sold): \[tid:(\d+)\] (\d+\.\d+).(\w+) at \$((\d+,)?\d+\.\d+)/
+    info_match = /(\w+) (bought|sold): \[tid:(\d+)\] (\d+\.\d+).(\w+) at \$((\d+,)*\d+\.\d+)/
     matches = info_match.match(info)
+    price = matches[6].gsub(',','')
     {currency: matches[1], buysell: matches[2], txid: matches[3],
-     amount: BigDecimal.new(matches[4]), price: BigDecimal.new(matches[6])}
+     amount: BigDecimal.new(matches[4]), price: BigDecimal.new(price)}
   end
 
   def amount=(new_amount)
