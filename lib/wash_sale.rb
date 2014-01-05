@@ -59,11 +59,17 @@ class WashSale
       duration_days = duration_seconds/60/60/24
       puts " duration days #{duration_days.to_i}"
       if duration_days > 365
+        # Long term sale
         tax = Tax.new({time: balance.time, type: "ltcg", value: balance.amount})
         taxes << tax
         @taxes << tax
         puts " "+tax.inspect
-      else
+      elsif duration_days > 30
+        # Short term sale
+        tax = Tax.new({time: balance.time, type: "stcg", value: balance.amount})
+        taxes << tax
+        @taxes << tax
+        puts " "+tax.inspect
       end
       taxes
     end
