@@ -74,6 +74,6 @@ class Statement
     else
       date = time.strftime("%Y-%b-%d")
     end
-    "#{date} #{action} #{amount}@#{price} ##{txid}"
+    "#{date} #{action} #{amount.to_f}@#{price} ##{txid}"
   end
 end

@@ -10,4 +10,8 @@ class Tax
   def ==(tix)
     @time == tix.time && @type == tix.type && @value == tix.value
   end
+
+  def inspect
+    "Tax event #{type} Proceeds: #{value.to_f}"
+  end
 end

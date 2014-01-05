@@ -37,8 +37,6 @@ records.each do |record|
   end
 
   washer.wash_sale(record)
-  washer.coins.display
-  washer.fiat.display
 end
 
 puts "** Final inventory"
