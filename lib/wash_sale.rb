@@ -33,8 +33,9 @@ class WashSale
     puts "#{reductions.size} reductions to sell off #{record.amount.to_f} coins"
     reductions.map do |reduction|
       value = reduction[:reduce] * record.price
-      puts "Sale amount #{reduction[:reduce].to_f} price #{record.price.to_f} = #{value.to_f}"
-      Statement.new({time:record.time, amount:value, price: 1, txid: record.txid, link: reduction[:statement].txid})
+      puts "Sale amount #{reduction[:reduce].to_f} price #{record.price.to_f} = #{value.to_f} tx #{reduction[:statement].txid}"
+      Statement.new({time:record.time, amount:value, price: 1,
+                     txid: record.txid, link: reduction[:statement]})
     end
   end
 
@@ -53,11 +54,12 @@ class WashSale
   def tax_check(balances, time)
     puts "tax checking #{time} on #{balances.inspect}"
     balances.reduce([]) do |taxes, balance|
-      duration_seconds = time - balance.time
+      duration_seconds = time - balance.link.time
       duration_days = duration_seconds/60/60/24
+      puts "duration days #{duration_days} #{duration_seconds}"
       if duration_days > 30
         puts "Tax event LTCG (#{duration_days.to_i} days) value: #{balance.amount.to_f}"
-        tax = Tax.new({time: balance.time, type: "ltcg", value: balance.amount})
+        tax = Tax.new({time: time, type: "ltcg", value: balance.amount})
         taxes << tax
         @taxes << tax
       end
