@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'bundler/setup'
 require 'json'
-require 'wash_sale.rb'
+require_relative 'lib/wash_sale.rb'
 
 puts "Loading #{ARGV}"
 inventory_hash = JSON.parse(File.open("inventory.json").read,{symbolize_names: true})
