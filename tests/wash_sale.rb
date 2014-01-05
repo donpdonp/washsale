@@ -22,7 +22,7 @@ describe WashSale do
       @washer = WashSale.new(coins, fiat)
     end
 
-    it "a sale of 1 coin" do
+    it "a sale of 1 longterm coin" do
       row = '127,"2013-04-16 00:00:00",earned,"BTC sold: [tid:1000000000000000] 1.00000000 BTC at $83.00000",0.83519,526.87448'
       reductions = @washer.wash_sale(Statement.new(CSV.parse_line(row)))
 
@@ -32,6 +32,12 @@ describe WashSale do
       correct_dollars << Statement.new({time: "2013-04-16", amount: 83, price: 1})
       @washer.coins.must_equal correct_coins
       @washer.fiat.must_equal correct_dollars
+
+      correct_taxes = [{time: "2013-04-16",
+                        type:"ltcg", value:83}
+                      ].map{|t| Tax.new(t)}
+      taxes = @washer.tax_check(@washer.fiat.balances, Time.parse("2013-06-01"))
+      taxes.must_equal correct_taxes
     end
 
     it "taxes (Feb 2013)" do
@@ -53,7 +59,7 @@ describe WashSale do
       coins = Inventory.new('btc')
 
       fiat = Inventory.new('usd')
-      initial_fiat =  {time: "2013-02-01", amount: 39, price: 0}
+      initial_fiat =  {time: "2013-02-01", amount: 39, price: 0, txid: "deposit1"}
       fiat << Statement.new(initial_fiat)
 
       @washer = WashSale.new(coins, fiat)
@@ -72,11 +78,6 @@ describe WashSale do
     end
 
     it "taxes (June 2013)" do
-      correct_taxes = [{time: "2013-02-01",
-                        type:"ltcg", value:BigDecimal.new("39")}
-                      ].map{|t| Tax.new(t)}
-      taxes = @washer.tax_check(@washer.fiat.balances, Time.parse("2013-06-01"))
-      taxes.must_equal correct_taxes
     end
   end
 end
