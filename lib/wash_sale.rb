@@ -43,6 +43,7 @@ class WashSale
     case record.action
     when "spent"
       buy(record)
+      fiat.clear_empties!
     when "earned"
       reductions = sell(record)
       reductions.each{|r| fiat << r}
@@ -62,6 +63,7 @@ class WashSale
         taxes << tax
         @taxes << tax
         puts " "+tax.inspect
+      else
       end
       taxes
     end
