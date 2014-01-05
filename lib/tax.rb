@@ -12,6 +12,6 @@ class Tax
   end
 
   def inspect
-    "Tax event #{type} Proceeds: #{value.to_f}"
+    "Tax event #{time.to_date} #{type} Proceeds: $#{"%0.2f"%value.to_f}"
   end
 end
