@@ -23,15 +23,15 @@ class Statement
     detail = info_parse(@action, info)
     @amount = detail[:amount]
     @price = detail[:price]
-    @txid = detail[:tid]
-    #@value = BigDecimal.new(row[4])
-    #@balance = BigDecimal.new(row[5])
+    @txid = detail[:txid]
   end
 
   def load_json(json)
     @time = json[:time].is_a?(Time) ? json[:time] : Time.parse(json[:time])
     @amount = BigDecimal.new(json[:amount])
     @price = BigDecimal.new(json[:price])
+    @txid = json[:txid]
+    @link = json[:link]
   end
 
   def info_parse(action, info)
@@ -45,7 +45,7 @@ class Statement
     #"BTC sold: [tid:1362024956429632] 1.20000000 BTC at $32.13310"
     info_match = /(\w+) (bought|sold): \[tid:(\d+)\] (\d+\.\d+).(\w+) at \$((\d+,)?\d+\.\d+)/
     matches = info_match.match(info)
-    {currency: matches[1], buysell: matches[2], tid: matches[3],
+    {currency: matches[1], buysell: matches[2], txid: matches[3],
      amount: BigDecimal.new(matches[4]), price: BigDecimal.new(matches[6])}
   end
 
