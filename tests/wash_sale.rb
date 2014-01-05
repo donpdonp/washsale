@@ -11,10 +11,10 @@ describe WashSale do
     washer.fiat.total.must_equal 0
   end
 
-  describe "initial inventory 9 coins 0 dollars (2011)" do
+  describe "initial inventory 9 coins(2011) 0 dollars" do
     before do
       coins = Inventory.new('btc')
-      initial_coins = {time: "2011-02-01", amount: 9, price: 0}
+      initial_coins = {time: "2011-02-01", amount: 9, price: 0, txid: "mined1"}
       coins << Statement.new(initial_coins)
 
       fiat = Inventory.new('usd')
@@ -33,16 +33,12 @@ describe WashSale do
       @washer.coins.must_equal correct_coins
       @washer.fiat.must_equal correct_dollars
 
+      # longterm sale is an immediate tax
       correct_taxes = [{time: "2013-04-16",
                         type:"ltcg", value:83}
                       ].map{|t| Tax.new(t)}
       taxes = @washer.tax_check(@washer.fiat.balances, Time.parse("2013-06-01"))
       taxes.must_equal correct_taxes
-    end
-
-    it "taxes (Feb 2013)" do
-      @washer.tax_check(@washer.fiat.balances, Time.parse("2013-02-01"))
-      @washer.taxes.must_equal []
     end
 
     it "a sale of 15 coins (insufficient inventory)" do
@@ -75,9 +71,35 @@ describe WashSale do
 
       correct_fiat = Inventory.new('usd')
       @washer.fiat.must_equal correct_fiat
+
+      # no tax on a purchase
+      @washer.taxes.must_equal []
     end
 
-    it "taxes (June 2013)" do
+  end
+
+  describe "inventory 0 coins(2013) 100 dollars" do
+    before do
+      coins = Inventory.new('btc')
+      buy = Statement.new({time: "2013-01-30", amount: 0, price: 0})
+      coins << buy
+
+      fiat = Inventory.new('usd')
+      initial_fiat =  {time: "2013-02-01", amount: 100, price: 0, txid: "A23", link: buy}
+      fiat << Statement.new(initial_fiat)
+
+      @washer = WashSale.new(coins, fiat)
     end
+
+    it "taxes 1 day after the sale" do
+      @washer.tax_check(@washer.fiat.balances, Time.parse("2013-02-02"))
+      @washer.taxes.must_equal []
+    end
+
+    it "taxes 60 days after the sale" do
+      @washer.tax_check(@washer.fiat.balances, Time.parse("2013-04-02"))
+      @washer.taxes.must_equal []
+    end
+
   end
 end
