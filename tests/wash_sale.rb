@@ -27,7 +27,7 @@ describe WashSale do
       reductions = @washer.wash_sale(Statement.new(CSV.parse_line(row)))
 
       correct_coins = Inventory.new('btc')
-      correct_coins << Statement.new({time: "2011-02-01", amount: 8, price: 0})
+      correct_coins << Statement.new({time: "2011-02-01", amount: 9, reduced: 1, price: 0})
       correct_dollars = Inventory.new('usd')
       correct_dollars << Statement.new({time: "2013-04-16", amount: 83, price: 1})
       @washer.coins.must_equal correct_coins
@@ -70,6 +70,7 @@ describe WashSale do
       @washer.coins.must_equal correct_coins
 
       correct_fiat = Inventory.new('usd')
+      correct_fiat << Statement.new({time: "2013-02-01", amount: 39, reduced: 39, price: 0, txid: "1z"})
       @washer.fiat.must_equal correct_fiat
 
       # no tax on a purchase

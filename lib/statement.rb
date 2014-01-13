@@ -4,10 +4,10 @@ require 'csv'
 
 class Statement
   attr_reader :time, :action, :txid, :amount, :price, :link
-  attr_accessor :wash
+  attr_accessor :reduced
 
   def initialize(values)
-    @wash = 0
+    @reduced = 0
     if values.is_a?(CSV::Row) || values.is_a?(Array)
       load_csv(values)
     elsif values.is_a?(Hash)
@@ -34,6 +34,7 @@ class Statement
     @time = json[:time].is_a?(Time) ? json[:time] : Time.parse(json[:time])
     @amount = BigDecimal.new(json[:amount])
     @price = BigDecimal.new(json[:price])
+    @reduced = json[:reduced] if json[:reduced]
     @txid = json[:txid]
     @link = json[:link]
   end
@@ -54,20 +55,22 @@ class Statement
      amount: BigDecimal.new(matches[4]), price: BigDecimal.new(price)}
   end
 
-  def amount=(new_amount)
-    @amount = new_amount
+  def value
+    reduced_amount * @price
   end
 
-  def value
+  def reduced_amount
+    wa = @amount-@reduced
+    raise "Negative reduced amount for #{this}" if wa < 0
+    wa
+  end
+
+  def original_value
     @amount * @price
   end
 
-  def gainloss
-    (@amount-@wash) * @price
-  end
-
   def ==(s)
-    time == s.time && amount == s.amount && price == s.price
+    time == s.time && amount == s.amount && price == s.price && reduced == s.reduced
   end
 
   def value_display
@@ -81,6 +84,6 @@ class Statement
       date = time.strftime("%Y-%b-%d")
     end
 
-    "#{date} #{action} #{"%0.5f"%amount.to_f}@#{"%0.3f"%price.to_f} = #{"%0.3f"%value} gain:#{"%0.3f"%gainloss} wash:#{"%0.3f"%wash.to_f} ##{txid}"
+    "#{date} #{action} #{"%0.5f"%amount.to_f} (#{"%0.5f"%reduced.to_f}) @#{"%0.3f"%price.to_f} = #{"%0.3f"%value} orig:#{"%0.3f"%original_value} ##{txid}"
   end
 end
