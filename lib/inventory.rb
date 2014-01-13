@@ -1,5 +1,5 @@
 class Inventory
-  attr_reader :balances
+  attr_reader :balances, :code
 
   def initialize(code)
     @code = code
@@ -56,7 +56,7 @@ class Inventory
       @balances.each {|line| puts " "+line.inspect}
       puts "Total #{"%0.2f" % total.to_f}#{@code}"
     else
-      puts "Inventory #{@code} is 0"
+      puts "Inventory #{@code} is empty."
     end
   end
 

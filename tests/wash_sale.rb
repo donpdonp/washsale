@@ -78,7 +78,7 @@ describe WashSale do
 
   end
 
-  describe "inventory 0 coins(2013) 100 dollars" do
+  describe "inventory buy, sell 1 day later" do
     before do
       coins = Inventory.new('btc')
       buy = Statement.new({time: "2013-01-30", amount: 0, price: 0})
@@ -102,6 +102,25 @@ describe WashSale do
                       ].map{|t| Tax.new(t)}
       @washer.tax_check(@washer.fiat.balances, Time.parse("2013-04-02"))
       @washer.taxes.must_equal correct_taxes
+    end
+  end
+
+  describe "buy today, sell 1 day later, buy back 2 days later" do
+    before do
+      coins = Inventory.new('btc')
+      @buy = Statement.new({time: "2013-01-30", amount: 0, price: 0})
+      coins << @buy
+
+      fiat = Inventory.new('usd')
+
+      @washer = WashSale.new(coins, fiat)
+    end
+
+    it "taxes after the buy" do
+      sales =  [{time: "2013-02-01", amount: 100, price: 0, txid: "A23", link: @buy}]
+      sales_records = sales.map{|sale| Statement.new(sale)}
+      @washer.tax_check(sales_records, Time.parse("2013-02-02"))
+      @washer.taxes.must_equal []
     end
 
   end

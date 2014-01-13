@@ -23,7 +23,7 @@ ARGV.each do |filename|
 end
 
 records = records.sort_by(&:time)
-puts "** #{records.size} records loaded. from #{records.first.time} to #{records.last.time}"
+puts "** #{records.size} records loaded. from #{records.first.time.to_date} to #{records.last.time.to_date}"
 
 washer = WashSale.new(coins, fiat)
 records.each do |record|
@@ -31,7 +31,7 @@ records.each do |record|
   when "spent"
     puts "= buy #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount} @ #{"%0.2f"%record.price}"
   when "earned"
-    puts "=sell #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount} @ #{"%0.2f"%record.price}"
+    puts "=sell #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{coins.code} @ #{"%0.2f"%record.price}#{fiat.code}"
   else
     puts "=#{record.action} skip"
   end

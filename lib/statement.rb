@@ -3,7 +3,7 @@ require 'bigdecimal'
 require 'csv'
 
 class Statement
-  attr_reader :time, :action, :txid, :amount, :price, :link
+  attr_reader :time, :action, :txid, :amount, :price, :link, :wash
 
   def initialize(values)
     if values.is_a?(CSV::Row) || values.is_a?(Array)
