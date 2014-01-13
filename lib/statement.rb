@@ -3,7 +3,7 @@ require 'bigdecimal'
 require 'csv'
 
 class Statement
-  attr_reader :time, :action, :txid, :amount, :price, :link
+  attr_reader :time, :action, :txid, :amount, :price, :account_balance, :link
   attr_accessor :reduced
 
   def initialize(values)
@@ -28,11 +28,15 @@ class Statement
       @price = detail[:price]
       @txid = detail[:txid]
     end
+    if action == "fee"
+      @amount = BigDecimal.new(row[4])
+    end
+    @account_balance = BigDecimal.new(row[5])
   end
 
   def load_json(json)
     @time = json[:time].is_a?(Time) ? json[:time] : Time.parse(json[:time])
-    @amount = BigDecimal.new(json[:amount])
+    @amount = BigDecimal.new(json[:amount], 8)
     @price = BigDecimal.new(json[:price])
     @reduced = json[:reduced] if json[:reduced]
     @txid = json[:txid]
@@ -43,6 +47,8 @@ class Statement
     case action
     when "earned", "spent"
       buysell_info_parse(info)
+    when "fee"
+      fee_info_parse(info)
     end
   end
 
@@ -53,6 +59,12 @@ class Statement
     price = matches[6].gsub(',','')
     {currency: matches[1], buysell: matches[2], txid: matches[3],
      amount: BigDecimal.new(matches[4]), price: BigDecimal.new(price)}
+  end
+
+  def fee_info_parse(info)
+    info_match = /(\w+) (bought|sold): \[tid:(\d+)\]/
+    matches = info_match.match(info)
+    {txid: matches[3]}
   end
 
   def value
