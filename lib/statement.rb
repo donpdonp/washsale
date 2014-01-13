@@ -61,7 +61,7 @@ class Statement
 
   def reduced_amount
     wa = @amount-@reduced
-    raise "Negative reduced amount for #{this}" if wa < 0
+    raise "Negative reduced amount for #{txid} #{@amount}" if wa < 0
     wa
   end
 
@@ -84,6 +84,6 @@ class Statement
       date = time.strftime("%Y-%b-%d")
     end
 
-    "#{date} #{action} #{"%0.5f"%amount.to_f} (#{"%0.5f"%reduced.to_f}) @#{"%0.3f"%price.to_f} = #{"%0.3f"%value} orig:#{"%0.3f"%original_value} ##{txid}"
+    "#{date} #{action} #{"%0.5f"%amount.to_f} (#{"%0.5f"%reduced.to_f}) @#{"%0.3f"%price.to_f} = #{"%0.3f"%value} orig:#{"%0.3f"%original_value} ##{txid} link:#{link.txid if link}"
   end
 end

@@ -24,7 +24,7 @@ class Inventory
   def remove(amount)
     raise "Insufficient inventory of #{total}#{@code} to remove #{amount}" unless sufficient?(amount)
     @balances.reduce([]) do |balances, balance|
-      available_amount = balance.amount
+      available_amount = balance.reduced_amount
       if available_amount >= amount
         partial_amount = amount
       else
@@ -37,7 +37,7 @@ class Inventory
   end
 
   def total
-    @balances.reduce(0){|memo, record| memo + record.amount}
+    @balances.reduce(0){|memo, record| memo + record.reduced_amount}
   end
 
   def ==(inv)
@@ -55,7 +55,7 @@ class Inventory
       @balances.each {|line| puts " "+line.inspect}
       puts "Total #{"%0.2f" % total.to_f}#{@code}"
     else
-      puts "Inventory #{@code} is empty."
+      puts "Inventory #{@code}: empty."
     end
   end
 

@@ -24,7 +24,8 @@ class WashSale
   def buy(record)
     value = record.amount * record.price
     raise "Insufficient dollars of #{fiat.total.to_f} to buy #{value.to_f}" if fiat.total < value
-    coins << Statement.new({time:record.time, amount:record.amount, price: record.price})
+    coins << Statement.new({time:record.time, amount:record.amount, price: record.price,
+                            txid: record.txid})
     @fiat.remove(value)
   end
 
@@ -47,7 +48,7 @@ class WashSale
     when "earned"
       reductions = sell(record)
       reductions.each{|r| fiat << r}
-      tax_check(reductions, record.time)
+      #tax_check(reductions, record.time)
       reductions
     end
   end
