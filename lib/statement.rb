@@ -3,9 +3,11 @@ require 'bigdecimal'
 require 'csv'
 
 class Statement
-  attr_reader :time, :action, :txid, :amount, :price, :link, :wash
+  attr_reader :time, :action, :txid, :amount, :price, :link
+  attr_accessor :wash
 
   def initialize(values)
+    @wash = 0
     if values.is_a?(CSV::Row) || values.is_a?(Array)
       load_csv(values)
     elsif values.is_a?(Hash)
@@ -60,6 +62,10 @@ class Statement
     @amount * @price
   end
 
+  def gainloss
+    (@amount-@wash) * @price
+  end
+
   def ==(s)
     time == s.time && amount == s.amount && price == s.price
   end
@@ -74,11 +80,7 @@ class Statement
     else
       date = time.strftime("%Y-%b-%d")
     end
-    wash = ""
-    if @wash && @wash > 0
-      wash = "wash #{@wash} "
-    end
 
-    "#{date} #{action} #{"%0.5f"%amount.to_f}@#{"%0.3f"%price.to_f} = #{"%0.3f"%value} #{wash}##{txid}"
+    "#{date} #{action} #{"%0.5f"%amount.to_f}@#{"%0.3f"%price.to_f} = #{"%0.3f"%value} gain:#{"%0.3f"%gainloss} wash:#{"%0.3f"%wash.to_f} ##{txid}"
   end
 end

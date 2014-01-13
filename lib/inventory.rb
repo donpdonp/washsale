@@ -26,12 +26,12 @@ class Inventory
     reductions = @balances.reduce([]) do |balances, balance|
       if balance.amount >= amount
         partial_amount = amount
-        balance.amount -= amount
       else
         partial_amount = balance.amount
-        balance.amount = 0
       end
+      balance.wash += partial_amount
       amount -= partial_amount
+      balance.wash
       balances << {statement: balance, reduce: partial_amount}
     end
     reductions
