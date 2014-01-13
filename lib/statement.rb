@@ -74,6 +74,11 @@ class Statement
     else
       date = time.strftime("%Y-%b-%d")
     end
-    "#{date} #{action} #{"%0.5f"%amount.to_f}@#{"%0.3f"%price.to_f} ##{txid}"
+    wash = ""
+    if @wash && @wash > 0
+      wash = "wash #{@wash} "
+    end
+
+    "#{date} #{action} #{"%0.5f"%amount.to_f}@#{"%0.3f"%price.to_f} = #{"%0.3f"%value} #{wash}##{txid}"
   end
 end
