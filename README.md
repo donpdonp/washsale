@@ -1,12 +1,11 @@
 washsale
 ========
 Calculate USA IRS basis value from mtgox exchange history. Every sale of a capital asset
-is taxed based on the purchase price of that asset. This script tracks the buy/sell history
-of coins on mtgox, which can quickly exceed the ability of one person to calculate by hand,
-and results in an new inventory output - your bitcoin inventory broken out by the basis
-or purchase value of each fraction of a coin.
+is taxed based on the purchase price (or "basis") of that asset. This script reads the
+csv transaction history from mtgox and results in a new output - bitcoin
+inventory showing the basis of each fraction of a coin.
 
-Disclaimer: I am not a lawyer or an accountant of any kind. 
+Disclaimer: I am not a lawyer or an accountant of any kind.
 The output of this software is not meant as tax advice. No warranty.
 I wrote this for my own needs and disclaim liability for anything
 the script does.
@@ -14,7 +13,7 @@ the script does.
 Steps
 =======
 
-1. Setup the Initial Inventory. 
+1. Setup the Initial Inventory.
 
 In my case I have mined coins from 2 years ago. Since they were mined I'm using
 a basis of $0. Another option is using the basis of the current market rate at the
@@ -25,7 +24,7 @@ time of mining. I went with the 'safest' approach. My inventory.json looks like
  "usd":[]}
 ```
 
-2. Retrieve mtgox history. 
+2. Retrieve mtgox history.
 
 In account history on the mtgox website, download the history csv files for USD. Make sure
 the csv is the USD version, not the BTC version.
