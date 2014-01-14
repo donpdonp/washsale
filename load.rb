@@ -39,14 +39,14 @@ records.each do |record|
   when "fee"
     puts "=fee #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{fiat.code} ##{record.txid}"
     fee_total += record.amount
-    calc_error = (record.account_balance - (fiat.total-fee_total)).abs
-    puts "!! calculation error csv balance #{"%0.2f"%record.account_balance} - (#{"%0.2f"%fiat.total}-#{"%0.2f"%fee_total}) =  #{"%0.8f"%calc_error}"
   else
     puts "=#{record.action} skip"
   end
 
   if processable
     washer.wash_sale(record)
+    calc_error = (record.account_balance - (fiat.total-fee_total)).abs
+    puts "!! calculation error csv balance #{"%0.2f"%record.account_balance} - (#{"%0.2f"%fiat.total}-#{"%0.2f"%fee_total}) =  #{"%0.8f"%calc_error}"
     coins.display
     fiat.display
   end
