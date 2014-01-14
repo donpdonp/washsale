@@ -28,7 +28,7 @@ class Statement
       @price = detail[:price]
       @txid = detail[:txid]
     end
-    if action == "fee"
+    if ["fee","deposit","withdraw"].include?(action)
       @amount = BigDecimal.new(row[4])
     end
     @account_balance = BigDecimal.new(row[5])

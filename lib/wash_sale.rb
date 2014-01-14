@@ -23,7 +23,7 @@ class WashSale
 
   def buy(record)
     value = record.amount * record.price
-    raise "Insufficient dollars of #{fiat.total.to_f} to buy #{value.to_f}" if fiat.total < value
+    raise "Insufficient dollars of #{"%0.2f"%fiat.total.to_f} to buy #{"%0.2f"%value.to_f}" if fiat.total < value
     coins << Statement.new({time:record.time, amount:record.amount, price: record.price,
                             txid: record.txid})
     @fiat.remove(value)
