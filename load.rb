@@ -61,7 +61,13 @@ records.each do |record|
 end
 
 puts "** end of records"
+
+coins.summary
+
 puts "Fees $#{"%0.3f"%fee_total} Deposits #{"%0.3f"%deposit_total} Withdraw total #{"%0.3f"%withdraw_total}"
-puts "Final USD Balance $#{"%0.3f"%(fiat.total - fee_total)}"
+balance = (fiat.total - fee_total)
+final_error = (balance - records.last.account_balance).abs
+puts "Final USD Balance $#{"%0.3f"%balance}. Error amount: $#{"%0.2f"%final_error}"
+
 puts "** Tax events"
 washer.taxes.each {|tax| puts tax.inspect}
