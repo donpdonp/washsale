@@ -55,8 +55,8 @@ records.each do |record|
     washer.wash_sale(record)
     calc_error = (record.account_balance - (fiat.total-fee_total) - (deposit_total-withdraw_total)).abs
     puts "!! calculation error csv balance #{"%0.2f"%record.account_balance} - (#{"%0.2f"%fiat.total}-#{"%0.2f"%fee_total}) =  #{"%0.8f"%calc_error}"
-    coins.display
-    fiat.display
+    #coins.display
+    #fiat.display
   end
 end
 

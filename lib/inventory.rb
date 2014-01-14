@@ -25,14 +25,17 @@ class Inventory
     raise "Insufficient inventory of #{total}#{@code} to remove #{amount}" unless sufficient?(amount)
     @balances.reduce([]) do |balances, balance|
       available_amount = balance.reduced_amount
-      if available_amount >= amount
-        partial_amount = amount
-      else
-        partial_amount = available_amount
+      if available_amount > 0 && amount > 0
+        if available_amount >= amount
+          partial_amount = amount
+        else
+          partial_amount = available_amount
+        end
+        balance.reduced += partial_amount
+        amount -= partial_amount
+        balances << {statement: balance, reduce: partial_amount}
       end
-      balance.reduced += partial_amount
-      amount -= partial_amount
-      balances << {statement: balance, reduce: partial_amount}
+      balances
     end
   end
 
