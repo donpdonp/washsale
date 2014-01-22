@@ -18,7 +18,7 @@ class Statement
   end
 
   def load_csv(row)
-    #@id = row[0]
+    id = row[0]
     @time = Time.parse(row[1])
     @action = row[2]
     info = row[3]
@@ -30,6 +30,11 @@ class Statement
     end
     if ["fee","deposit","withdraw"].include?(action)
       @amount = BigDecimal.new(row[4])
+    end
+    if ["deposit","withdraw"].include?(action)
+      if @txid.nil?
+        @txid = "#{action}-id"
+      end
     end
     @account_balance = BigDecimal.new(row[5])
   end
