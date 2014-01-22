@@ -60,10 +60,10 @@ records.each do |record|
   case record.action
   when "spent"
     processable = true
-    puts "= buy #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount} @ #{"%0.2f"%record.price} = #{"%0.2f"%record.value} fee #{"%0.3f"%record.fee} ##{record.txid}"
+    puts "= buy #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount} @ #{"%0.2f"%record.price} = #{"%0.2f"%record.value} fee #{"%0.3f"%record.fee}btc ##{record.txid}"
   when "earned"
     processable = true
-    puts "=sell #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{coins.code} @ #{"%0.2f"%record.price}#{fiat.code} = #{"%0.2f"%record.value} fee #{"%0.3f"%record.fee} ##{record.txid}"
+    puts "=sell #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{coins.code} @ #{"%0.2f"%record.price}#{fiat.code} = #{"%0.2f"%record.value} fee #{"%0.3f"%record.fee}usd ##{record.txid}"
   when "fee"
     puts "=fee #{record.time.strftime("%Y-%m-%d")} #{"%0.3f"%record.amount}#{fiat.code} ##{record.txid}"
   when "deposit"
@@ -80,11 +80,11 @@ records.each do |record|
     washer.wash_sale(record)
     if record.action == "earned"
       calc_error = (record.fee_balance - fiat.total - (deposit_total-withdraw_total)).abs
-      puts "!! sell calculation error csv fee balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%fiat.total} = #{"%0.8f"%calc_error}"
+      puts "!! sell calculation error csv fee USD balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%fiat.total} = #{"%0.8f"%calc_error}"
     end
     if record.action == "spent"
       calc_error = (record.fee_balance - coins.total).abs
-      puts "!! buy calculation error csv fee balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%coins.total} = #{"%0.8f"%calc_error}"
+      puts "!! buy calculation error csv fee BTC balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%coins.total} = #{"%0.8f"%calc_error}"
       coins.display
     end
     puts "** coins total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%coins.total}"
