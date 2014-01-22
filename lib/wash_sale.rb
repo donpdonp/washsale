@@ -35,7 +35,7 @@ class WashSale
     reductions.map do |reduction|
       value = reduction[:reduce] * record.price
       fee = reduction[:reduce]/record.amount*record.fee
-      puts " Sale: #{"%0.8f"%reduction[:reduce].to_f} @ #{record.price.to_f} = #{value.to_f} link tx #{reduction[:statement].txid} fee #{fee}"
+      puts " Sale: #{"%0.8f"%reduction[:reduce].to_f} @ #{record.price.to_f} = #{value.to_f} fee #{"%0.3f"%fee} link tx #{reduction[:statement].txid}"
       Statement.new({time:record.time, amount:value, price: 1,
                      txid: record.txid, link: reduction[:statement],
                      fee: fee})
