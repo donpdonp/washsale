@@ -4,10 +4,10 @@ require 'csv'
 
 class Statement
   attr_reader :time, :action, :txid, :amount, :price, :account_balance, :link
-  attr_accessor :reduced, :fee
+  attr_accessor :reduced, :fee, :fee_balance
 
   def initialize(values)
-    @reduced = 0
+    @reduced = @fee = 0
     if values.is_a?(CSV::Row) || values.is_a?(Array)
       load_csv(values)
     elsif values.is_a?(Hash)
@@ -43,6 +43,7 @@ class Statement
     @time = json[:time].is_a?(Time) ? json[:time] : Time.parse(json[:time])
     @amount = BigDecimal.new(json[:amount], 8)
     @price = BigDecimal.new(json[:price])
+    @fee = BigDecimal.new(json[:fee]) if json[:fee]
     @reduced = json[:reduced] if json[:reduced]
     @txid = json[:txid]
     @link = json[:link]
@@ -83,6 +84,14 @@ class Statement
     wa = @amount-@reduced
     raise "Negative reduced amount for #{txid} #{@amount}" if wa < 0
     wa
+  end
+
+  def reduced_ratio
+    (@amount-@reduced)/@amount
+  end
+
+  def reduced_fee
+    @fee * reduced_ratio
   end
 
   def original_value
