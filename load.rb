@@ -35,7 +35,7 @@ CSV.foreach(ARGV[1], {headers:true}) do |row|
   if stmt.action == 'fee'
     records.each_with_index do |r, idx|
       if r.txid == stmt.txid
-        r.fee = stmt.amount
+        r.fee = stmt.amount * r.price
         records.insert(idx, stmt)
         break
       end
