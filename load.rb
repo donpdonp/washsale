@@ -3,6 +3,11 @@ require 'bundler/setup'
 require 'json'
 require_relative 'lib/wash_sale.rb'
 
+if ARGV.size != 2
+  puts "usage: load.rb mtgox_usd.csv mtgox_btc.csv"
+  exit
+end
+
 puts "Loading #{ARGV}"
 inventory_hash = JSON.parse(File.open("inventory.json").read,{symbolize_names: true})
 
@@ -16,9 +21,18 @@ coins.display
 fiat.display
 
 records = []
-ARGV.each do |filename|
-  CSV.foreach(filename, {headers:true}) do |row|
-    records << Statement.new(row)
+CSV.foreach(ARGV[0], {headers:true}) do |row|
+  records << Statement.new(row)
+end
+
+# btc fee backfill
+CSV.foreach(ARGV[1], {headers:true}) do |row|
+  stmt = Statement.new(row)
+  if stmt.action == 'fee'
+    usd_match = records.select{|r| r.txid == stmt.txid}.first
+    if usd_match
+
+    end
   end
 end
 
@@ -55,6 +69,7 @@ records.each do |record|
     washer.wash_sale(record)
     calc_error = (record.account_balance - (fiat.total-fee_total) - (deposit_total-withdraw_total)).abs
     puts "!! calculation error csv balance #{"%0.2f"%record.account_balance} - (#{"%0.2f"%fiat.total}-#{"%0.2f"%fee_total}) =  #{"%0.8f"%calc_error}"
+    puts "** coins total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%coins.total}"
     #coins.display
     #fiat.display
   end

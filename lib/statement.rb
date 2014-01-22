@@ -64,7 +64,10 @@ class Statement
   def fee_info_parse(info)
     info_match = /(\w+) (bought|sold): \[tid:(\d+)\]/
     matches = info_match.match(info)
-    {txid: matches[3]}
+    # ignore "Fees for Bitcoin withdraw to 1dY69kQp8iZkkVEw..."
+    if matches
+      {txid: matches[3]}
+    end
   end
 
   def value
