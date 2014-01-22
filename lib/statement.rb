@@ -4,7 +4,7 @@ require 'csv'
 
 class Statement
   attr_reader :time, :action, :txid, :amount, :price, :account_balance, :link
-  attr_accessor :reduced
+  attr_accessor :reduced, :fee
 
   def initialize(values)
     @reduced = 0

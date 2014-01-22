@@ -21,17 +21,24 @@ coins.display
 fiat.display
 
 records = []
+
 CSV.foreach(ARGV[0], {headers:true}) do |row|
-  records << Statement.new(row)
+  stmt = Statement.new(row)
+  # usd fee backfill
+  records.select{|r| r.txid == stmt.txid}.first.fee = stmt.amount if stmt.action == 'fee'
+  records << stmt
 end
 
 # btc fee backfill
 CSV.foreach(ARGV[1], {headers:true}) do |row|
   stmt = Statement.new(row)
   if stmt.action == 'fee'
-    usd_match = records.select{|r| r.txid == stmt.txid}.first
-    if usd_match
-
+    records.each_with_index do |r, idx|
+      if r.txid == stmt.txid
+        r.fee = stmt.amount
+        records.insert(idx, stmt)
+        break
+      end
     end
   end
 end
@@ -54,7 +61,7 @@ records.each do |record|
     puts "=sell #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{coins.code} @ #{"%0.2f"%record.price}#{fiat.code} = #{"%0.2f"%record.value} ##{record.txid}"
   when "fee"
     puts "=fee #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{fiat.code} ##{record.txid}"
-    fee_total += record.amount
+    #fee_total += record.amount
   when "deposit"
     deposit_total += record.amount
     puts "=deposit #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{fiat.code} to date: #{"%0.2f"%deposit_total}"
