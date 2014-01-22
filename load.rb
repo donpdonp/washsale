@@ -39,7 +39,7 @@ CSV.foreach(ARGV[1], {headers:true}) do |row|
   if stmt.action == 'fee'
     records.each_with_index do |r, idx|
       if r.txid == stmt.txid
-        r.fee = stmt.amount * r.price
+        r.fee = stmt.amount
         r.fee_balance = stmt.account_balance
         records.insert(idx, stmt)
         break
@@ -85,6 +85,7 @@ records.each do |record|
     if record.action == "spent"
       calc_error = (record.fee_balance - coins.total).abs
       puts "!! buy calculation error csv fee balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%coins.total} = #{"%0.8f"%calc_error}"
+      coins.display
     end
     puts "** coins total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%coins.total}"
     puts "** fiat total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%fiat.total}"
