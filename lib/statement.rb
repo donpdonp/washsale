@@ -107,12 +107,16 @@ class Statement
   end
 
   def inspect
+    parts = []
     if time.year == Time.now.year
       date = time.strftime("%b-%d")
     else
       date = time.strftime("%Y-%b-%d")
     end
 
-    "#{date} #{action} #{"%0.5f"%amount.to_f} (#{"%0.5f"%reduced.to_f}) @#{"%0.3f"%price.to_f} = #{"%0.3f"%value} orig:#{"%0.3f"%original_value} fee: #{fee} ##{txid} link:#{link.txid if link}"
+    parts << "#{date} #{action}"
+    parts << "#{"%0.5f"%amount.to_f} (#{"%0.5f"%reduced.to_f}) @#{"%0.3f"%price.to_f} = #{"%0.3f"%value} orig:#{"%0.3f"%original_value} fee: #{"%0.3f"%fee} ##{txid}"
+    parts << " link:#{link.txid}" if link
+    parts.join
   end
 end

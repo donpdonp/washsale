@@ -41,7 +41,7 @@ CSV.foreach(ARGV[1], {headers:true}) do |row|
       if r.txid == stmt.txid
         r.fee = stmt.amount
         r.fee_balance = stmt.account_balance
-        records.insert(idx, stmt)
+        records.insert(idx+1, stmt)
         break
       end
     end
@@ -60,10 +60,10 @@ records.each do |record|
   case record.action
   when "spent"
     processable = true
-    puts "= buy #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount} @ #{"%0.2f"%record.price} = #{"%0.2f"%record.value} fee #{"%0.3f"%record.fee}btc ##{record.txid}"
+    puts "= buy #{record.time.strftime("%Y-%m-%d")} #{"%0.3f"%record.amount} @ #{"%0.2f"%record.price} = #{"%0.2f"%record.value} fee #{"%0.3f"%record.fee}btc ##{record.txid}"
   when "earned"
     processable = true
-    puts "=sell #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{coins.code} @ #{"%0.2f"%record.price}#{fiat.code} = #{"%0.2f"%record.value} fee #{"%0.3f"%record.fee}usd ##{record.txid}"
+    puts "=sell #{record.time.strftime("%Y-%m-%d")} #{"%0.3f"%record.amount}#{coins.code} @ #{"%0.2f"%record.price}#{fiat.code} = #{"%0.2f"%record.value} fee #{"%0.3f"%record.fee}usd ##{record.txid}"
   when "fee"
     puts "=fee #{record.time.strftime("%Y-%m-%d")} #{"%0.3f"%record.amount}#{fiat.code} ##{record.txid}"
   when "deposit"
@@ -72,6 +72,8 @@ records.each do |record|
   when "withdraw"
     withdraw_total += record.amount
     puts "=withdraw #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{fiat.code} to date: #{"%0.2f"%withdraw_total}"
+    puts "** coins total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%coins.total}"
+    puts "** fiat total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%(fiat.total+(deposit_total-withdraw_total))}"
   else
     puts "=#{record.action} skip"
   end
@@ -79,8 +81,8 @@ records.each do |record|
   if processable
     washer.wash_sale(record)
     if record.action == "earned"
-      calc_error = (record.fee_balance - fiat.total - (deposit_total-withdraw_total)).abs
-      puts "!! sell calculation error csv fee USD balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%fiat.total} = #{"%0.8f"%calc_error}"
+      calc_error = (record.fee_balance - (fiat.total + (deposit_total - withdraw_total))).abs
+      puts "!! sell calculation error csv fee USD balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%fiat.total} + #{"%0.2f"%deposit_total} - #{"%0.2f"%withdraw_total} = #{"%0.8f"%calc_error}"
     end
     if record.action == "spent"
       calc_error = (record.fee_balance - coins.total).abs
