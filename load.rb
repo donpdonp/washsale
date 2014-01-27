@@ -65,7 +65,7 @@ records.each do |record|
     processable = true
     puts "=sell #{record.time.strftime("%Y-%m-%d")} #{"%0.3f"%record.amount}#{coins.code} @ #{"%0.2f"%record.price}#{fiat.code} = #{"%0.2f"%record.value} fee #{"%0.3f"%record.fee}usd ##{record.txid}"
   when "fee"
-    puts "=fee #{record.time.strftime("%Y-%m-%d")} #{"%0.3f"%record.amount}#{fiat.code} ##{record.txid}"
+    puts "=fee #{record.time.strftime("%Y-%m-%d")} #{"%0.3f"%record.amount} ##{record.txid}"
   when "deposit"
     deposit_total += record.amount
     puts "=deposit #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{fiat.code} to date: #{"%0.2f"%deposit_total}"
@@ -87,7 +87,6 @@ records.each do |record|
     if record.action == "spent"
       calc_error = (record.fee_balance - coins.total).abs
       puts "!! buy calculation error csv fee BTC balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%coins.total} = #{"%0.8f"%calc_error}"
-      coins.display
     end
     puts "** coins total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%coins.total}"
     puts "** fiat total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%fiat.total}"

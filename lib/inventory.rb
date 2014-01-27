@@ -40,7 +40,7 @@ class Inventory
   end
 
   def total
-    @balances.reduce(0){|memo, record| memo + record.reduced_amount - record.reduced_fee}
+    @balances.reduce(0){|memo, record| memo + record.reduced_amount - record.fee}
   end
 
   def ==(inv)
