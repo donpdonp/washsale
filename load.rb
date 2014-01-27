@@ -52,7 +52,6 @@ end
 puts "** #{records.size} records loaded. from #{records.first.time.to_date} to #{records.last.time.to_date}"
 
 washer = WashSale.new(coins, fiat)
-fee_total = 0
 deposit_total = 0
 withdraw_total = 0
 records.each do |record|
@@ -90,19 +89,17 @@ records.each do |record|
     end
     puts "** coins total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%coins.total}"
     puts "** fiat total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%fiat.total}"
-    #coins.display
-    #fiat.display
   end
 end
 
 puts "** end of records"
 
 coins.summary
+fiat.summary
 
-puts "Fees $#{"%0.3f"%fee_total} Deposits #{"%0.3f"%deposit_total} Withdraw total #{"%0.3f"%withdraw_total}"
-balance = (fiat.total - fee_total)
-final_error = (balance - records.last.account_balance).abs
-puts "Final USD Balance $#{"%0.3f"%balance}. Error amount: $#{"%0.2f"%final_error}"
+puts "Deposits #{"%0.3f"%deposit_total}. Withdrawls #{"%0.3f"%withdraw_total}. Difference #{"%0.3f"%(deposit_total-withdraw_total)}"
+final_error = (fiat.total - records.last.account_balance).abs
+puts "USD Error based on last csv record: $#{"%0.2f"%final_error}"
 
 puts "** Tax events"
 washer.taxes.each {|tax| puts tax.inspect}
