@@ -30,7 +30,6 @@ CSV.foreach(ARGV[0], {headers:true}) do |row|
     matching_record.fee = stmt.amount
     matching_record.fee_balance = stmt.account_balance
   end
-puts stmt.inspect if stmt.action == 'withdraw'
   records << stmt
 end
 
@@ -88,7 +87,7 @@ records.each do |record|
     deposit_total += record.amount
     puts "=deposit #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{fiat.code} to date: #{"%0.2f"%deposit_total}"
   when "withdraw_btc"
-    puts "=withdraw_btc #{record.amount}"
+    puts "=withdraw_btc #{"%0.2f"%record.amount}"
     withdraw_btc_total += record.amount
   when "withdraw"
     withdraw_total += record.amount
@@ -101,16 +100,18 @@ records.each do |record|
 
   if processable
     washer.wash_sale(record)
+    btc_adjust = deposit_btc_total - withdraw_btc_total
+    usd_adjust = deposit_total - withdraw_total
     if record.action == "earned"
-      calc_error = (record.fee_balance - (fiat.total + (deposit_total - withdraw_total))).abs
+      calc_error = (record.fee_balance - (fiat.total + usd_adjust)).abs
       puts "!! sell calculation error csv fee USD balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%fiat.total} + #{"%0.2f"%deposit_total} - #{"%0.2f"%withdraw_total} = #{"%0.8f"%calc_error}"
     end
     if record.action == "spent"
-      calc_error = (record.fee_balance - (coins.total + (deposit_btc_total - withdraw_btc_total))).abs
-      puts "!! buy calculation error csv fee BTC balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%coins.total} + #{"%0.2f"%deposit_btc_total} - #{"%0.2f"%withdraw_btc_total} = #{"%0.8f"%calc_error}"
+      calc_error = (record.fee_balance - (coins.total + btc_adjust)).abs
+      puts "!! buy calculation error csv fee BTC balance #{"%0.4f"%record.fee_balance} - #{"%0.4f"%coins.total} + #{"%0.4f"%deposit_btc_total} - #{"%0.4f"%withdraw_btc_total} = #{"%0.8f"%calc_error}"
     end
-    puts "** coins total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%coins.total}"
-    puts "** fiat total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%fiat.total}"
+    puts "** coins total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%(coins.total+btc_adjust)}"
+    puts "** fiat total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%(fiat.total+usd_adjust)}"
   end
 end
 
