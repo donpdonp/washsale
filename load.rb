@@ -35,6 +35,7 @@ puts stmt.inspect if stmt.action == 'withdraw'
 end
 
 # btc fee backfill
+last_btc_idx = nil
 CSV.foreach(ARGV[1], {headers:true}) do |row|
   stmt = Statement.new(row)
   if stmt.action == 'fee'
@@ -49,13 +50,16 @@ CSV.foreach(ARGV[1], {headers:true}) do |row|
   end
 
   if ["in","out","fee"].include?(stmt.action)
-    last_btc_tid = 0
+    records.each_with_index do |r, idx|
+      if r.txid == stmt.txid
+        last_btc_idx = idx
+      end
+    end
   end
 
   if stmt.action == 'withdraw'
     stmt.action = "withdraw_btc"
-    puts "adding withdraw btc #{stmt.action}"
-    records << stmt
+    records.insert(last_btc_idx+1, stmt)
   end
 end
 

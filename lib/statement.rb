@@ -54,7 +54,7 @@ class Statement
     case action
     when "earned", "spent"
       buysell_info_parse(info)
-    when "fee"
+    when "fee","in","out"
       fee_info_parse(info)
     end
   end
