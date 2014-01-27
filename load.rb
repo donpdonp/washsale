@@ -30,6 +30,7 @@ CSV.foreach(ARGV[0], {headers:true}) do |row|
     matching_record.fee = stmt.amount
     matching_record.fee_balance = stmt.account_balance
   end
+puts stmt.inspect if stmt.action == 'withdraw'
   records << stmt
 end
 
@@ -46,6 +47,16 @@ CSV.foreach(ARGV[1], {headers:true}) do |row|
       end
     end
   end
+
+  if ["in","out","fee"].include?(stmt.action)
+    last_btc_tid = 0
+  end
+
+  if stmt.action == 'withdraw'
+    stmt.action = "withdraw_btc"
+    puts "adding withdraw btc #{stmt.action}"
+    records << stmt
+  end
 end
 
 #records = records.sort_by(&:time)
@@ -54,6 +65,8 @@ puts "** #{records.size} records loaded. from #{records.first.time.to_date} to #
 washer = WashSale.new(coins, fiat)
 deposit_total = 0
 withdraw_total = 0
+deposit_btc_total = 0
+withdraw_btc_total = 0
 records.each do |record|
   processable = false
   case record.action
@@ -65,9 +78,14 @@ records.each do |record|
     puts "=sell #{record.time.strftime("%Y-%m-%d")} #{"%0.3f"%record.amount}#{coins.code} @ #{"%0.2f"%record.price}#{fiat.code} = #{"%0.2f"%record.value} fee #{"%0.3f"%record.fee}usd ##{record.txid}"
   when "fee"
     puts "=fee #{record.time.strftime("%Y-%m-%d")} #{"%0.3f"%record.amount} ##{record.txid}"
+  when "deposit_btc"
+    deposit_btc_total += record.amount
   when "deposit"
     deposit_total += record.amount
     puts "=deposit #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{fiat.code} to date: #{"%0.2f"%deposit_total}"
+  when "withdraw_btc"
+    puts "=withdraw_btc #{record.amount}"
+    withdraw_btc_total += record.amount
   when "withdraw"
     withdraw_total += record.amount
     puts "=withdraw #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{fiat.code} to date: #{"%0.2f"%withdraw_total}"
@@ -84,8 +102,8 @@ records.each do |record|
       puts "!! sell calculation error csv fee USD balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%fiat.total} + #{"%0.2f"%deposit_total} - #{"%0.2f"%withdraw_total} = #{"%0.8f"%calc_error}"
     end
     if record.action == "spent"
-      calc_error = (record.fee_balance - coins.total).abs
-      puts "!! buy calculation error csv fee BTC balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%coins.total} = #{"%0.8f"%calc_error}"
+      calc_error = (record.fee_balance - (coins.total + (deposit_btc_total - withdraw_btc_total))).abs
+      puts "!! buy calculation error csv fee BTC balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%coins.total} + #{"%0.2f"%deposit_btc_total} - #{"%0.2f"%withdraw_btc_total} = #{"%0.8f"%calc_error}"
     end
     puts "** coins total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%coins.total}"
     puts "** fiat total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%fiat.total}"
@@ -98,7 +116,7 @@ coins.summary
 fiat.summary
 
 puts "Deposits #{"%0.3f"%deposit_total}. Withdrawls #{"%0.3f"%withdraw_total}. Difference #{"%0.3f"%(deposit_total-withdraw_total)}"
-final_error = (fiat.total - records.last.account_balance).abs
+final_error = (fiat.total - records.select{|r|["earned","spent"].include?(r.action)}.last.account_balance).abs
 puts "USD Error based on last csv record: $#{"%0.2f"%final_error}"
 
 puts "** Tax events"

@@ -3,8 +3,8 @@ require 'bigdecimal'
 require 'csv'
 
 class Statement
-  attr_reader :time, :action, :txid, :amount, :price, :account_balance, :link
-  attr_accessor :reduced, :fee, :fee_balance
+  attr_reader :time, :txid, :amount, :price, :account_balance, :link
+  attr_accessor :action, :reduced, :fee, :fee_balance
 
   def initialize(values)
     @reduced = @fee = 0
@@ -30,6 +30,7 @@ class Statement
     end
     if ["fee","deposit","withdraw"].include?(action)
       @amount = BigDecimal.new(row[4])
+      @price = 1
     end
     if ["deposit","withdraw"].include?(action)
       if @txid.nil?
