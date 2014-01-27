@@ -119,4 +119,8 @@ class Statement
     parts << " link:#{link.txid}" if link
     parts.join
   end
+
+  def fee_balance
+    @fee_balance || @account_balance
+  end
 end
