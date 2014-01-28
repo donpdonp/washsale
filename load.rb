@@ -24,6 +24,9 @@ records = []
 
 CSV.foreach(ARGV[0], {headers:true}) do |row|
   stmt = Statement.new(row)
+  if stmt.action == "earned"
+    stmt.fee_balance = stmt.account_balance
+  end
   # usd fee backfill
   if stmt.action == 'fee'
     matching_record = records.select{|r| r.txid == stmt.txid}.first
@@ -37,6 +40,15 @@ end
 last_btc_idx = nil
 CSV.foreach(ARGV[1], {headers:true}) do |row|
   stmt = Statement.new(row)
+  if stmt.action == 'in'
+    records.each_with_index do |r, idx|
+      if r.txid == stmt.txid
+        r.fee_balance = stmt.account_balance
+        break
+      end
+    end
+  end
+
   if stmt.action == 'fee'
     records.each_with_index do |r, idx|
       if r.txid == stmt.txid
@@ -62,7 +74,6 @@ CSV.foreach(ARGV[1], {headers:true}) do |row|
   end
 end
 
-#records = records.sort_by(&:time)
 puts "** #{records.size} records loaded. from #{records.first.time.to_date} to #{records.last.time.to_date}"
 
 washer = WashSale.new(coins, fiat)
@@ -104,6 +115,9 @@ records.each do |record|
     btc_adjust = deposit_btc_total - withdraw_btc_total
     usd_adjust = deposit_total - withdraw_total
     if record.action == "earned"
+      if record.fee_balance.nil?
+        puts "NIL fee #{record.txid}"
+      end
       calc_error = (record.fee_balance - (fiat.total + usd_adjust)).abs
       puts "!! sell calculation error csv fee USD balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%fiat.total} + #{"%0.2f"%deposit_total} - #{"%0.2f"%withdraw_total} = #{"%0.8f"%calc_error}"
     end
@@ -122,7 +136,7 @@ coins.summary
 fiat.summary
 
 puts "Deposits #{"%0.3f"%deposit_total}. Withdrawls #{"%0.3f"%withdraw_total}. Difference #{"%0.3f"%(deposit_total-withdraw_total)}"
-final_error = (fiat.total - records.select{|r|["earned","spent"].include?(r.action)}.last.account_balance).abs
+final_error = (fiat.total - records.select{|r|["fee","earned","spent"].include?(r.action)}.last.account_balance).abs
 puts "USD Error based on last csv record: $#{"%0.2f"%final_error}"
 
 puts "** Tax events"

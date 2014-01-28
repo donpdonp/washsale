@@ -52,7 +52,7 @@ class Statement
 
   def info_parse(action, info, id)
     case action
-    when "earned", "spent"
+    when "earned", "spent", "in", "out"
       buysell_info_parse(info)
     when "fee"
       fee_info_parse(info, id)
@@ -134,9 +134,5 @@ class Statement
     parts << "#{"%0.5f"%amount.to_f} (#{"%0.5f"%reduced.to_f}) @#{"%0.3f"%price.to_f} = #{"%0.3f"%value} orig:#{"%0.3f"%original_value} fee: #{"%0.3f"%fee} ##{txid}"
     parts << " link:#{link.txid}" if link
     parts.join
-  end
-
-  def fee_balance
-    @fee_balance || @account_balance
   end
 end
