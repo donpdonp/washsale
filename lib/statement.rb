@@ -22,7 +22,7 @@ class Statement
     @time = Time.parse(row[1])
     @action = row[2]
     info = row[3]
-    detail = info_parse(@action, info)
+    detail = info_parse(@action, info, id)
     if detail
       @amount = detail[:amount]
       @price = detail[:price]
@@ -50,12 +50,14 @@ class Statement
     @link = json[:link]
   end
 
-  def info_parse(action, info)
+  def info_parse(action, info, id)
     case action
     when "earned", "spent"
       buysell_info_parse(info)
-    when "fee","in","out"
-      fee_info_parse(info)
+    when "fee"
+      fee_info_parse(info, id)
+    when "withdraw","deposit"
+      withdep_info_parse(info, id)
     end
   end
 
@@ -68,12 +70,27 @@ class Statement
      amount: BigDecimal.new(matches[4]), price: BigDecimal.new(price)}
   end
 
-  def fee_info_parse(info)
+  def fee_info_parse(info, id)
     info_match = /(\w+) (bought|sold): \[tid:(\d+)\]/
     matches = info_match.match(info)
-    # ignore "Fees for Bitcoin withdraw to 1dY69kQp8iZkkVEw..."
     if matches
-      {txid: matches[3]}
+      return {txid: matches[3]}
+    end
+    fee_match = /^Fees for (\w+) withdraw to ([\w-]+)/
+    matches = fee_match.match(info)
+    if matches
+      txid = "#{matches[2]}-#{id.to_i-1}"
+      puts txid
+      return {txid: txid}
+    end
+  end
+
+  def withdep_info_parse(info, id)
+    info_match = /^(\w+) withdraw to ([\w-]+)/
+    matches = info_match.match(info)
+    if matches
+      puts "withdep info #{matches[2]}-#{id}"
+      return {txid: "#{matches[2]}-#{id}"}
     end
   end
 
