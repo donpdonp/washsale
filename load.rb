@@ -138,8 +138,9 @@ usd_adjust = deposit_total - withdraw_total
 fiat.summary(usd_adjust)
 
 puts "Deposits #{"%0.3f"%deposit_total}. Withdrawls #{"%0.3f"%withdraw_total}. Difference #{"%0.3f"%(deposit_total-withdraw_total)}"
-final_error = (fiat.total - records.select{|r|["fee","earned","spent"].include?(r.action)}.last.account_balance).abs
-puts "USD Error based on last csv record: $#{"%0.2f"%final_error}"
+last_potent = records.select{|r|["fee","earned","spent"].include?(r.action)}.last
+final_error = (fiat.total - last_potent.account_balance + usd_adjust).abs
+puts "USD Error based on last csv record ##{last_potent.txid}: $#{"%0.2f"%final_error}"
 
 puts "** Tax events"
 washer.taxes.each {|tax| puts tax.inspect}
