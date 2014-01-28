@@ -82,13 +82,14 @@ records.each do |record|
   when "fee"
     puts "=fee #{record.time.strftime("%Y-%m-%d")} #{"%0.3f"%record.amount} ##{record.txid}"
   when "deposit_btc"
-    deposit_btc_total += record.amount
+    puts "=deposit_btc #{"%0.4f"%record.amount} fee #{"%0.4f"%record.fee} "
+    deposit_btc_total += record.amount - record.fee
   when "deposit"
     deposit_total += record.amount
     puts "=deposit #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{fiat.code} to date: #{"%0.2f"%deposit_total}"
   when "withdraw_btc"
-    puts "=withdraw_btc #{"%0.2f"%record.amount}"
-    withdraw_btc_total += record.amount
+    puts "=withdraw_btc #{"%0.4f"%record.amount} fee #{"%0.4f"%record.fee} "
+    withdraw_btc_total += record.amount - record.fee
   when "withdraw"
     withdraw_total += record.amount
     puts "=withdraw #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{fiat.code} to date: #{"%0.2f"%withdraw_total}"

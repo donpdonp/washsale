@@ -80,7 +80,6 @@ class Statement
     matches = fee_match.match(info)
     if matches
       txid = "#{matches[2]}-#{id.to_i-1}"
-      puts txid
       return {txid: txid}
     end
   end
@@ -89,7 +88,6 @@ class Statement
     info_match = /^(\w+) withdraw to ([\w-]+)/
     matches = info_match.match(info)
     if matches
-      puts "withdep info #{matches[2]}-#{id}"
       return {txid: "#{matches[2]}-#{id}"}
     end
   end
