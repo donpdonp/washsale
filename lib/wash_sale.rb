@@ -57,14 +57,13 @@ puts "Buy is removing value #{"%0.3f"%value} from #{record.txid}"
   end
 
   def tax_check(balances, time)
-    puts "tax checking #{time.to_date} on #{balances.inspect}"
     balances.reduce([]) do |taxes, balance|
       duration_seconds = time - balance.link.time
       duration_days = duration_seconds/60/60/24
-      puts " duration days #{duration_days.to_i}"
+      tax = Tax.new({time: balance.time, duration: duration_days, value: balance.amount})
       if duration_days > 365
         # Long term sale
-        tax = Tax.new({time: balance.time, type: "ltcg", value: balance.amount})
+        tax.type = "ltcg"
         taxes << tax
         @taxes << tax
         puts " "+tax.inspect

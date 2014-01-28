@@ -111,15 +111,13 @@ records.each do |record|
   end
 
   if processable
-    washer.wash_sale(record)
+    sale_results = washer.wash_sale(record)
     btc_adjust = deposit_btc_total - withdraw_btc_total
     usd_adjust = deposit_total - withdraw_total
     if record.action == "earned"
-      if record.fee_balance.nil?
-        puts "NIL fee #{record.txid}"
-      end
       calc_error = (record.fee_balance - (fiat.total + usd_adjust)).abs
       puts "!! sell calculation error csv fee USD balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%fiat.total} + #{"%0.2f"%deposit_total} - #{"%0.2f"%withdraw_total} = #{"%0.8f"%calc_error}"
+      washer.tax_check(sale_results, record.time)
     end
     if record.action == "spent"
       calc_error = (record.fee_balance - (coins.total + btc_adjust)).abs
