@@ -132,8 +132,10 @@ end
 
 puts "** end of records"
 
-coins.summary
-fiat.summary
+btc_adjust = deposit_btc_total - withdraw_btc_total
+coins.summary(btc_adjust)
+usd_adjust = deposit_total - withdraw_total
+fiat.summary(usd_adjust)
 
 puts "Deposits #{"%0.3f"%deposit_total}. Withdrawls #{"%0.3f"%withdraw_total}. Difference #{"%0.3f"%(deposit_total-withdraw_total)}"
 final_error = (fiat.total - records.select{|r|["fee","earned","spent"].include?(r.action)}.last.account_balance).abs

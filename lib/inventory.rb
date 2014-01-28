@@ -62,7 +62,7 @@ class Inventory
     end
   end
 
-  def summary
+  def summary(adjust)
     if @balances.size > 0
       puts "Inventory #{@code}:"
       @balances.each do |bal|
@@ -70,7 +70,7 @@ class Inventory
           puts " "+bal.inspect
         end
       end
-      puts "Total #{"%0.2f" % total.to_f}#{@code}"
+      puts "Total #{"%0.2f" % (total+adjust)}#{@code}"
     else
       puts "Inventory #{@code}: empty."
     end
