@@ -99,7 +99,8 @@ describe WashSale do
 
     it "taxes 60 days after the sale" do
       correct_taxes = [{time: "2013-02-01",
-                        type:"stcg", value:100}
+                        type:"stcg", value:100,
+                        link: @washer.fiat.balances.first}
                       ].map{|t| Tax.new(t)}
       @washer.tax_check(@washer.fiat.balances, Time.parse("2013-04-02"))
       @washer.taxes.must_equal correct_taxes
