@@ -74,7 +74,7 @@ CSV.foreach(ARGV[1], {headers:true}) do |row|
   end
 end
 
-puts "== #{records.size} records loaded. from #{records.first.time.to_date} to #{records.last.time.to_date}"
+puts "-*- #{records.size} records loaded. from #{records.first.time.to_date} to #{records.last.time.to_date}"
 
 washer = WashSale.new(coins, fiat)
 deposit_total = 0
@@ -125,12 +125,14 @@ records.each do |record|
         puts "!! buy calculation error csv fee BTC balance #{"%0.4f"%record.fee_balance} - #{"%0.4f"%coins.total} + #{"%0.4f"%deposit_btc_total} - #{"%0.4f"%withdraw_btc_total} = #{"%0.8f"%calc_error}"
       end
     end
+    puts "** coins total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%(coins.total+btc_adjust)}"
+    puts "** fiat total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%(fiat.total+usd_adjust)}"
+    coins.summary(btc_adjust)
+    fiat.summary(usd_adjust)
   end
-  puts "** coins total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%(coins.total+btc_adjust)}"
-  puts "** fiat total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%(fiat.total+usd_adjust)}"
 end
 
-puts "== end of records"
+puts "-*- end of records"
 
 btc_adjust = deposit_btc_total - withdraw_btc_total
 coins.summary(btc_adjust)

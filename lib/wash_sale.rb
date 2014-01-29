@@ -73,7 +73,7 @@ class WashSale
         @taxes << tax
         puts " "+tax.inspect
       else
-        puts " skipping #{duration_days.to_i} days"
+        puts " held for #{duration_days.to_i} days"
       end
       taxes
     end
