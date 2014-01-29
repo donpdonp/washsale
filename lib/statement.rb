@@ -131,8 +131,12 @@ class Statement
     end
 
     parts << "#{date} #{action}"
-    parts << "#{"%0.5f"%amount.to_f} (#{"%0.5f"%reduced.to_f}) @#{"%0.3f"%price.to_f} = #{"%0.3f"%value} orig:#{"%0.3f"%original_value} fee: #{"%0.3f"%fee} ##{txid}"
-    parts << " link:#{link.txid}" if link
-    parts.join
+    parts << "#{"%0.5f"%amount.to_f}"
+    if reduced > 0
+      parts << "(#{"%0.5f"%reduced.to_f})"
+    end
+    parts << "@$#{"%0.3f"%price.to_f} = $#{"%0.3f"%value} fee: #{"%0.3f"%fee} ##{txid}"
+    parts << "link:#{link.txid}" if link
+    parts.join(' ')
   end
 end

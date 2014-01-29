@@ -74,7 +74,7 @@ CSV.foreach(ARGV[1], {headers:true}) do |row|
   end
 end
 
-puts "** #{records.size} records loaded. from #{records.first.time.to_date} to #{records.last.time.to_date}"
+puts "== #{records.size} records loaded. from #{records.first.time.to_date} to #{records.last.time.to_date}"
 
 washer = WashSale.new(coins, fiat)
 deposit_total = 0
@@ -104,16 +104,14 @@ records.each do |record|
   when "withdraw"
     withdraw_total += record.amount
     puts "=withdraw #{record.time.strftime("%Y-%m-%d")} #{"%0.2f"%record.amount}#{fiat.code} to date: #{"%0.2f"%withdraw_total}"
-    puts "** coins total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%coins.total}"
-    puts "** fiat total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%(fiat.total+(deposit_total-withdraw_total))}"
   else
     puts "=#{record.action} skip"
   end
 
+  btc_adjust = deposit_btc_total - withdraw_btc_total
+  usd_adjust = deposit_total - withdraw_total
   if processable
     sale_results = washer.wash_sale(record)
-    btc_adjust = deposit_btc_total - withdraw_btc_total
-    usd_adjust = deposit_total - withdraw_total
     if record.action == "earned"
       calc_error = (record.fee_balance - (fiat.total + usd_adjust)).abs
       if calc_error > 0.000001
@@ -128,9 +126,11 @@ records.each do |record|
       end
     end
   end
+  puts "** coins total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%(coins.total+btc_adjust)}"
+  puts "** fiat total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%(fiat.total+usd_adjust)}"
 end
 
-puts "** end of records"
+puts "== end of records"
 
 btc_adjust = deposit_btc_total - withdraw_btc_total
 coins.summary(btc_adjust)
