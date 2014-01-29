@@ -1,5 +1,5 @@
 class Tax
-  attr_reader :time, :value
+  attr_reader :time, :value, :link
   attr_accessor :duration, :type
 
   def initialize(attrs)
@@ -7,6 +7,7 @@ class Tax
     @type = attrs[:type]
     @value = attrs[:value]
     @duration = attrs[:duration]
+    @link = attrs[:link]
   end
 
   def ==(tix)
@@ -14,6 +15,6 @@ class Tax
   end
 
   def inspect
-    "Tax event #{time.to_date} (#{duration.to_i} days) #{type} Proceeds: $#{"%0.2f"%value.to_f}"
+    "Tax event Buy #{@link.link.time.to_date} @$#{"%0.2f"%@link.link.price} Sell #{@link.time.to_date} $#{"%0.2f"%@link.amount} (#{duration.to_i} days) #{type} Proceeds: $#{"%0.2f"%value.to_f} "
   end
 end
