@@ -26,7 +26,6 @@ class WashSale
     raise "Insufficient dollars of #{"%0.2f"%fiat.total.to_f} to buy #{"%0.2f"%value.to_f}" if fiat.total < value
     coins << Statement.new({time:record.time, amount:record.amount, price: record.price,
                             txid: record.txid, fee: record.fee})
-puts "Buy is removing value #{"%0.3f"%value} from #{record.txid}"
     @fiat.remove(value)
   end
 
