@@ -17,8 +17,8 @@ coins, fiat = inventory_hash.map do |code, records|
   inv
 end
 puts "** Initial Inventory"
-coins.display
-fiat.display
+coins.summary
+fiat.summary
 
 records = []
 

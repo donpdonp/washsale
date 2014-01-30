@@ -52,17 +52,7 @@ class Inventory
     !rejects
   end
 
-  def display
-    if @balances.size > 0
-      puts "Inventory #{@code}:"
-      @balances.each {|line| puts " "+line.inspect}
-      puts "Total #{"%0.2f" % total.to_f}#{@code}"
-    else
-      puts "Inventory #{@code}: empty."
-    end
-  end
-
-  def summary(adjust)
+  def summary(adjust=0)
     if @balances.size > 0
       puts "Inventory #{@code}:"
       @balances.each do |bal|
