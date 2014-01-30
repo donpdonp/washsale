@@ -43,6 +43,10 @@ class Inventory
     @balances.reduce(0){|memo, record| memo + record.reduced_amount - record.fee}
   end
 
+  def fee_total
+    @balances.reduce(0){|memo, record| memo + record.fee}
+  end
+
   def ==(inv)
     return false if inv.balances.size != balances.size
     rejects = false
@@ -60,7 +64,7 @@ class Inventory
           puts " "+bal.inspect
         end
       end
-      puts "Total #{"%0.2f"%(total+adjust)}#{@code} (#{"%0.2f"%adjust})"
+      puts "Total #{"%0.4f"%(total+adjust)}#{@code} (fee #{"%0.4f"%fee_total}) (adj #{"%0.4f"%adjust})"
     else
       puts "Inventory #{@code}: empty."
     end
