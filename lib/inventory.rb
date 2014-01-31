@@ -64,7 +64,7 @@ class Inventory
           puts " "+bal.inspect
         end
       end
-      puts "Total #{"%0.4f"%(total+adjust)}#{@code} (fee #{"%0.4f"%fee_total}) (adj #{"%0.4f"%adjust})"
+      puts "Total #{"%0.4f"%(total+adjust)}#{@code} (fees -#{"%0.4f"%fee_total}) (adj #{"%0.4f"%adjust})"
     else
       puts "Inventory #{@code}: empty."
     end

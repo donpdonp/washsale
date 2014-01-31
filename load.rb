@@ -127,8 +127,6 @@ records.each do |record|
     end
     puts "** coins total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%(coins.total+btc_adjust)}"
     puts "** fiat total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%(fiat.total+usd_adjust)}"
-    coins.summary(btc_adjust)
-    fiat.summary(usd_adjust)
   end
 end
 
