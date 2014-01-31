@@ -115,14 +115,14 @@ records.each do |record|
     if record.action == "earned"
       calc_error = (record.fee_balance - (fiat.total + usd_adjust)).abs
       if calc_error > 0.000001
-        puts "!! sell calculation error csv fee USD balance #{"%0.2f"%record.fee_balance} - #{"%0.2f"%fiat.total} + #{"%0.2f"%deposit_total} - #{"%0.2f"%withdraw_total} = #{"%0.8f"%calc_error}"
+        puts "!! sell calculation error csv fee USD balance #{"%0.4f"%record.fee_balance} - #{"%0.4f"%(fiat.total+usd_adjust)} + #{"%0.2f"%deposit_total} - #{"%0.2f"%withdraw_total} = #{"%0.8f"%calc_error}"
       end
       washer.tax_check(sale_results, record.time)
     end
     if record.action == "spent"
       calc_error = (record.fee_balance - (coins.total + btc_adjust)).abs
       if calc_error > 0.000001
-        puts "!! buy calculation error csv fee BTC balance #{"%0.4f"%record.fee_balance} - #{"%0.4f"%coins.total} + #{"%0.4f"%deposit_btc_total} - #{"%0.4f"%withdraw_btc_total} = #{"%0.8f"%calc_error}"
+        puts "!! buy calculation error csv fee BTC balance #{"%0.4f"%record.fee_balance} - #{"%0.4f"%(coins.total+btc_adjust)} + #{"%0.4f"%deposit_btc_total} - #{"%0.4f"%withdraw_btc_total} = #{"%0.8f"%calc_error}"
       end
     end
     puts "** coins total: #{record.time.strftime("%Y-%m-%d %H:%M:%S")} #{"%0.4f"%(coins.total+btc_adjust)}"
