@@ -18,7 +18,7 @@ class Tax
     parts = []
     parts << "Tax event"
     parts << "Buy #{@link.link.time.to_date} @$#{"%0.2f"%@link.link.price}"
-    parts << "Sell #{@link.time.to_date} $#{"%0.2f"%@link.amount}"
+    parts << "Sell #{@link.time.to_date} #{"%0.2f"%link.sell_amount}@$#{"%0.2f"%link.sell_price} = $#{"%0.2f"%@link.amount}"
     parts << "(#{duration.to_i} days)"
     if duration < 30
       parts << "WASH SALE"

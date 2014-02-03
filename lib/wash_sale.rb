@@ -37,7 +37,7 @@ class WashSale
       fee = reduction[:reduce]/record.amount*record.fee
       puts " Sale: #{"%0.4f"%reduction[:reduce].to_f} @ #{"%0.4f"%record.price.to_f} = #{"%8.4f"%value.to_f} fee #{"%0.3f"%fee} From tx ##{reduction[:statement].txid} #{reduction[:statement].time.strftime("%Y-%m-%d")}"
       Statement.new({time:record.time, amount:value, price: 1,
-                     sell_amount: reduction[:reduce],
+                     sell_amount: reduction[:reduce], sell_price: record.price,
                      txid: record.txid, link: reduction[:statement],
                      fee: fee})
     end
