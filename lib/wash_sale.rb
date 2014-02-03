@@ -60,9 +60,10 @@ class WashSale
     balances.reduce([]) do |taxes, balance|
       duration_seconds = time - balance.link.time
       duration_days = duration_seconds/60/60/24
-      proceeds = balance.value - (balance.sell_amount * balance.link.price)
-      tax = Tax.new({time: balance.time, duration: duration_days,
-                     value: proceeds, link: balance})
+      cost = balance.sell_amount * balance.link.price
+      gainloss = balance.value - cost
+      tax = Tax.new({time: balance.time, duration: duration_days, cost: cost,
+                     proceeds: balance.value, gainloss: gainloss, link: balance})
       if duration_days > 365
         # Long term sale
         tax.type = "ltcg"

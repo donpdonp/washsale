@@ -1,17 +1,19 @@
 class Tax
-  attr_reader :time, :value, :link
+  attr_reader :time, :proceeds, :link, :gainloss, :cost
   attr_accessor :duration, :type
 
   def initialize(attrs)
     @time = attrs[:time].is_a?(Time) ? attrs[:time] : Time.parse(attrs[:time])
     @type = attrs[:type]
-    @value = attrs[:value]
+    @proceeds = attrs[:proceeds]
+    @gainloss = attrs[:gainloss]
+    @cost = attrs[:cost]
     @duration = attrs[:duration]
     @link = attrs[:link]
   end
 
   def ==(tix)
-    @time == tix.time && @type == tix.type && @value == tix.value
+    @time == tix.time && @type == tix.type && @proceeds == tix.proceeds
   end
 
   def inspect
@@ -23,7 +25,7 @@ class Tax
     if duration < 30
       parts << "WASH SALE"
     end
-    parts << "#{type} Proceeds: $#{"%0.2f"%value.to_f} "
+    parts << "#{type} Proceeds: $#{"%0.2f"%proceeds.to_f} "
     parts.join(' ')
   end
 end

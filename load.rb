@@ -143,7 +143,23 @@ puts "USD Error based on last csv record ##{last_potent.txid}: $#{"%0.2f"%final_
 
 puts "** #{washer.taxes.count} Tax events"
 washer.taxes.each {|tax| puts tax.inspect}
-stcg_balance = washer.taxes.reduce(0){|total, tax| total += tax.value if tax.type == 'stcg'; total}
-wash_balance = washer.taxes.reduce(0){|total, tax| total += tax.value if tax.type == 'stcg' && tax.value < 0 && tax.duration <= 30; total}
-puts "STCG #{"%0.4f"%stcg_balance}"
-puts "WASH #{"%0.4f"%wash_balance}"
+proceeds_balance = washer.taxes.reduce(0) do |total, tax|
+  total += tax.proceeds if tax.type == 'stcg'
+  total
+end
+cost_balance = washer.taxes.reduce(0) do |total, tax|
+  total += tax.cost if tax.type == 'stcg'
+  total
+end
+wash_balance = washer.taxes.reduce(0) do |total, tax|
+  total += tax.proceeds if tax.type == 'stcg' && tax.gainloss < 0 && tax.duration <= 30
+  total
+end
+gainloss_balance = washer.taxes.reduce(0) do |total, tax|
+  total += tax.gainloss if tax.type == 'stcg'
+  total
+end
+puts "proceeds $#{"%0.2f"%proceeds_balance}"
+puts "WASH $#{"%0.2f"%wash_balance}"
+puts "cost $#{"%0.2f"%cost_balance}"
+puts "gainloss $#{"%0.2f"%gainloss_balance}"
