@@ -143,5 +143,5 @@ puts "USD Error based on last csv record ##{last_potent.txid}: $#{"%0.2f"%final_
 
 puts "** #{washer.taxes.count} Tax events"
 washer.taxes.each {|tax| puts tax.inspect}
-tax_balance = washer.taxes.reduce(0){|total, tax| total += tax.value}
+tax_balance = washer.taxes.reduce(0){|total, tax| total += tax.value if tax.type == 'stcg'; total}
 puts "#{"%0.4f"%tax_balance}"
