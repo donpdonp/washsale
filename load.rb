@@ -117,7 +117,6 @@ records.each do |record|
       if calc_error > 0.000001
         puts "!! sell calculation error csv fee USD balance #{"%0.4f"%record.fee_balance} - #{"%0.4f"%(fiat.total+usd_adjust)} + #{"%0.2f"%deposit_total} - #{"%0.2f"%withdraw_total} = #{"%0.8f"%calc_error}"
       end
-      washer.tax_check(sale_results, record.time)
     end
     if record.action == "spent"
       calc_error = (record.fee_balance - (coins.total + btc_adjust)).abs
@@ -144,3 +143,5 @@ puts "USD Error based on last csv record ##{last_potent.txid}: $#{"%0.2f"%final_
 
 puts "** #{washer.taxes.count} Tax events"
 washer.taxes.each {|tax| puts tax.inspect}
+tax_balance = washer.taxes.reduce(0){|total, tax| total += tax.value}
+puts "#{"%0.4f"%tax_balance}"

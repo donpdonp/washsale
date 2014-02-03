@@ -3,7 +3,7 @@ require 'bigdecimal'
 require 'csv'
 
 class Statement
-  attr_reader :time, :txid, :amount, :price, :account_balance, :link
+  attr_reader :time, :txid, :amount, :price, :account_balance, :link, :sell_amount
   attr_accessor :action, :reduced, :fee, :fee_balance
 
   def initialize(values)
@@ -48,6 +48,7 @@ class Statement
     @reduced = json[:reduced] if json[:reduced]
     @txid = json[:txid]
     @link = json[:link]
+    @sell_amount = json[:sell_amount]
   end
 
   def info_parse(action, info, id)

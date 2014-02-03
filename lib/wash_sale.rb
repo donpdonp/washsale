@@ -37,6 +37,7 @@ class WashSale
       fee = reduction[:reduce]/record.amount*record.fee
       puts " Sale: #{"%0.4f"%reduction[:reduce].to_f} @ #{"%0.4f"%record.price.to_f} = #{"%8.4f"%value.to_f} fee #{"%0.3f"%fee} From tx ##{reduction[:statement].txid} #{reduction[:statement].time.strftime("%Y-%m-%d")}"
       Statement.new({time:record.time, amount:value, price: 1,
+                     sell_amount: reduction[:reduce],
                      txid: record.txid, link: reduction[:statement],
                      fee: fee})
     end
@@ -50,7 +51,7 @@ class WashSale
     when "earned"
       reductions = sell(record)
       reductions.each{|r| fiat << r}
-      #tax_check(reductions, record.time)
+      tax_check(reductions, record.time)
       reductions
     end
   end
@@ -59,8 +60,9 @@ class WashSale
     balances.reduce([]) do |taxes, balance|
       duration_seconds = time - balance.link.time
       duration_days = duration_seconds/60/60/24
-      proceeds = balance.value - balance.link.value
-      tax = Tax.new({time: balance.time, duration: duration_days, value: proceeds, link: balance})
+      proceeds = balance.value - (balance.sell_amount * balance.link.price)
+      tax = Tax.new({time: balance.time, duration: duration_days,
+                     value: proceeds, link: balance})
       if duration_days > 365
         # Long term sale
         tax.type = "ltcg"
