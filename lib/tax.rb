@@ -15,6 +15,15 @@ class Tax
   end
 
   def inspect
-    "Tax event Buy #{@link.link.time.to_date} @$#{"%0.2f"%@link.link.price} Sell #{@link.time.to_date} $#{"%0.2f"%@link.amount} (#{duration.to_i} days) #{type} Proceeds: $#{"%0.2f"%value.to_f} "
+    parts = []
+    parts << "Tax event"
+    parts << "Buy #{@link.link.time.to_date} @$#{"%0.2f"%@link.link.price}"
+    parts << "Sell #{@link.time.to_date} $#{"%0.2f"%@link.amount}"
+    parts << "(#{duration.to_i} days)"
+    if duration < 30
+      parts << "WASH SALE"
+    end
+    parts << "#{type} Proceeds: $#{"%0.2f"%value.to_f} "
+    parts.join(' ')
   end
 end

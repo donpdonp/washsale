@@ -67,14 +67,12 @@ class WashSale
         taxes << tax
         @taxes << tax
         puts " "+tax.inspect
-      elsif duration_days > 30
+      else
         # Short term sale
         tax.type = "stcg"
         taxes << tax
         @taxes << tax
         puts " "+tax.inspect
-      else
-        puts " held for #{duration_days.to_i} days - wash sale - not a tax event"
       end
       taxes
     end

@@ -142,5 +142,5 @@ last_potent = records.select{|r|["fee","earned","spent"].include?(r.action)}.las
 final_error = (fiat.total - last_potent.account_balance + usd_adjust).abs
 puts "USD Error based on last csv record ##{last_potent.txid}: $#{"%0.2f"%final_error}"
 
-puts "** Tax events"
+puts "** #{washer.taxes.count} Tax events"
 washer.taxes.each {|tax| puts tax.inspect}
