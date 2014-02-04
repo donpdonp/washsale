@@ -13,7 +13,7 @@ inventory_hash = JSON.parse(File.open("inventory.json").read,{symbolize_names: t
 
 coins, fiat = inventory_hash.map do |code, records|
   puts "WTF #{code.inspect}"
-  order = (code == :btc ? 'fifo' : 'lifo')
+  order = (code == :btc ? 'lifo' : 'fifo')
   puts "inventory #{code} #{order}"
   inv = Inventory.new(code, order)
   records.each do |h|

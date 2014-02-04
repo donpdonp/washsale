@@ -10,9 +10,9 @@ class Inventory
   def <<(statement)
     if statement.is_a?(Statement)
       case @order
-      when 'lifo'
-        @balances.push(statement)
       when 'fifo'
+        @balances.push(statement)
+      when 'lifo'
         @balances.insert(0, statement)
       else
         raise "Invalid ordering #{@order}"
