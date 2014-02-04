@@ -12,8 +12,13 @@ puts "Loading #{ARGV}"
 inventory_hash = JSON.parse(File.open("inventory.json").read,{symbolize_names: true})
 
 coins, fiat = inventory_hash.map do |code, records|
-  inv = Inventory.new(code)
-  records.each {|h| inv << h}
+  puts "WTF #{code.inspect}"
+  order = (code == :btc ? 'fifo' : 'lifo')
+  puts "inventory #{code} #{order}"
+  inv = Inventory.new(code, order)
+  records.each do |h|
+    inv << Statement.new(h)
+  end
   inv
 end
 puts "** Initial Inventory"

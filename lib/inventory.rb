@@ -1,16 +1,25 @@
 class Inventory
   attr_reader :balances, :code
 
-  def initialize(code)
+  def initialize(code, order)
     @code = code
+    @order = order
     @balances = []
   end
 
   def <<(statement)
-    if statement.is_a?(Hash)
-      statement = Statement.new(statement)
+    if statement.is_a?(Statement)
+      case @order
+      when 'lifo'
+        @balances.push(statement)
+      when 'fifo'
+        @balances.insert(0, statement)
+      else
+        raise "Invalid ordering #{@order}"
+      end
+    else
+      raise "Wrong inventory object #{statement.class}"
     end
-    @balances << statement
   end
 
   def sufficient?(amount)
