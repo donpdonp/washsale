@@ -142,13 +142,19 @@ final_error = (fiat.total - last_potent.account_balance + usd_adjust).abs
 puts "USD Error based on last csv record ##{last_potent.txid}: $#{"%0.2f"%final_error}"
 
 puts "** #{washer.taxes.count} Tax events"
-washer.taxes.each {|tax| puts tax.inspect}
+washer.taxes.each do |tax|
+  puts tax.inspect
+end
 
+ltp_balance = 0
 proceeds_balance = 0
 cost_balance = 0
 wash_balance = 0
 gainloss_balance = 0
 washer.taxes.reduce(0) do |total, tax|
+  if tax.type == 'ltcg'
+    ltp_balance += tax.proceeds
+  end
   if tax.type == 'stcg'
     proceeds_balance += tax.proceeds
     cost_balance += tax.cost
@@ -158,6 +164,7 @@ washer.taxes.reduce(0) do |total, tax|
     end
   end
 end
+puts "LongTerm $#{"%0.2f"%ltp_balance}"
 puts "proceeds $#{"%0.2f"%proceeds_balance}"
 puts "WASH $#{"%0.2f"%wash_balance}"
 puts "cost $#{"%0.2f"%cost_balance}"
