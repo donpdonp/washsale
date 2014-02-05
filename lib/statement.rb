@@ -120,6 +120,14 @@ class Statement
     time == s.time && amount == s.amount && price == s.price && reduced == s.reduced
   end
 
+  def wash_sale?
+    duration_days = (time - link.time) / 60 / 24
+    cost = sell_amount * link.price
+    gainloss = value - cost
+    puts "wash sale calc #{gainloss} #{duration_days}"
+    gainloss < 0 && duration_days <= 30
+  end
+
   def inspect
     parts = []
     if time.year == Time.now.year
