@@ -1,2 +1,5 @@
-["btc":[{"time":"2011-01-01", "amount":20, "price":0, "txid":"mined1"}],
- "usd":[]]
+{"btc": {"order": "fifo",
+         "records": ["btc":[{"time":"2011-01-01", "amount":20, "price":0, "txid":"mined1"}]},
+ "usd": {"order":"fifo",
+         "records":[]}
+}
