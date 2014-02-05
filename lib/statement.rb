@@ -120,10 +120,6 @@ class Statement
     time == s.time && amount == s.amount && price == s.price && reduced == s.reduced
   end
 
-  def value_display
-    "%9.4f" % @value.to_f
-  end
-
   def inspect
     parts = []
     if time.year == Time.now.year
