@@ -18,13 +18,13 @@ class Tax
 
   def inspect
     parts = []
-    parts << "Tax event"
-    parts << "Buy #{@link.link.time.to_date} @$#{"%0.2f"%@link.link.price}"
-    parts << "Sell #{@link.time.to_date} #{"%0.2f"%link.sell_amount}@$#{"%0.2f"%link.sell_price} = $#{"%0.2f"%@proceeds}"
-    parts << "(#{duration.to_i} days)"
+    parts << "Bitcoin"
+    parts << "#{@link.link.time.to_date} #{@link.time.to_date}"
+    parts << "$#{"%0.2f"%@proceeds}"
+    parts << "$#{"%0.2f"%@cost}"
     if link.wash_sale?
     end
-    parts << "#{type} Gainloss: $#{"%0.2f"%gainloss} "
-    parts.join(' ')
+    parts << "#{type} $#{"%0.2f"%gainloss} "
+    parts.join("\t")
   end
 end
