@@ -23,7 +23,6 @@ class Tax
     parts << "Sell #{@link.time.to_date} #{"%0.2f"%link.sell_amount}@$#{"%0.2f"%link.sell_price} = $#{"%0.2f"%@proceeds}"
     parts << "(#{duration.to_i} days)"
     if link.wash_sale?
-      parts << "WASH SALE"
     end
     parts << "#{type} Gainloss: $#{"%0.2f"%gainloss} "
     parts.join(' ')

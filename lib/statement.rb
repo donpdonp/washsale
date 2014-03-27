@@ -124,7 +124,6 @@ class Statement
     duration_days = (time - link.time) / 60 / 24
     cost = sell_amount * link.price
     gainloss = value - cost
-    puts "wash sale calc #{gainloss} #{duration_days}"
     gainloss < 0 && duration_days <= 30
   end
 
